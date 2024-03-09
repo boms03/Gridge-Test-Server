@@ -14,11 +14,28 @@ spring:
     init:
       platform: mysql
   datasource:
-    url: jdbc:mysql://localhost:3306/demo?autoReconnect=true&setTimezone=Asia/Seoul # 변경해주세요
-    username: # username
-    password: # password
+    url: ${db-url}
+    username: ${db-username}
+    password: ${db-password}
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
     # driver-class-name: com.mysql.jdbc.Driver # mysql 5버전
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${client-id}
+            redirect-uri: ${redirect-uri}
+            authorization-grant-type: authorization_code
+
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
   OAuth2:
     google:
       url: https://accounts.google.com/o/oauth2/v2/auth
@@ -47,7 +64,7 @@ springdoc:
     - /**
 
 jwt:
-  secret-key: UwKYibQQgkW7g-*k.ap9kje-wxBHb9wdXoBT4vnt4P3sJWt-Nu  # JWT key. 수정해주세요
+  secret-key: ${jwt-key}
 
 ---
 spring:
