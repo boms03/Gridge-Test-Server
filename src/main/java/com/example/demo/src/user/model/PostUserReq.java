@@ -20,6 +20,9 @@ public class PostUserReq {
     private String name;
     private Date birth;
     private boolean isOAuth;
+    private boolean isTermsOfService;
+    private boolean isDataBasedPolicy;
+    private boolean isLocationBasedPolicy;
 
     public User toEntity() {
         return User.builder()
