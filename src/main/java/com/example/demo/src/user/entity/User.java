@@ -1,9 +1,14 @@
 package com.example.demo.src.user.entity;
 
 import com.example.demo.common.entity.BaseEntity;
+import com.example.demo.src.mapping.userAgree.UserAgree;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = false)
@@ -17,8 +22,14 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 20)
     private String email;
+
+    @Column(nullable = false, length = 100)
+    private String phoneNumber;
+
+    @Column(nullable = false, length = 20)
+    private String username;
 
     @Column(nullable = false)
     private String password;
@@ -29,13 +40,30 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isOAuth;
 
+    private String provider;
+
+    // Oauth 생일 정보 필수가 아니라서 nullable
+    private Date birth;
+
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime lastAgreedAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserAgree> userAgreeList = new ArrayList<>();
+
+
     @Builder
-    public User(Long id, String email, String password, String name, boolean isOAuth) {
-        this.id = id;
+    public User(Long id, String email, String phoneNumber, String username, String password, String name, boolean isOAuth, Date birth, LocalDateTime lastAgreedAt, String provider) {
         this.email = email;
+        this.id = id;
+        this.phoneNumber = phoneNumber;
+        this.username = username;
         this.password = password;
         this.name = name;
         this.isOAuth = isOAuth;
+        this.birth = birth;
+        this.lastAgreedAt = lastAgreedAt;
+        this.provider = provider;
     }
 
     public void updateName(String name) {
