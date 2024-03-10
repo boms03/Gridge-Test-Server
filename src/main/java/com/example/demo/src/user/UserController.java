@@ -9,6 +9,7 @@ import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponse;
 import com.example.demo.src.user.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.List;
 
 
 import static com.example.demo.common.response.BaseResponseStatus.*;
-import static com.example.demo.utils.ValidationRegex.isRegexEmail;
+import static com.example.demo.utils.ValidationRegex.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,16 +40,33 @@ public class UserController {
      */
     // Body
     @ResponseBody
-    @PostMapping("")
+    @PostMapping("/signup")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-        // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
-        if(postUserReq.getEmail() == null){
-            return new BaseResponse<>(USERS_EMPTY_EMAIL);
+        // 전화번호 정규식
+        if(!isRegexPhoneNumber(postUserReq.getPhoneNumber())){
+            return new BaseResponse<>(POST_USERS_INVALID_PHONE);
         }
-        //이메일 정규표현
-        if(!isRegexEmail(postUserReq.getEmail())){
-            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+        // 전화번호 중복 검사
+        if(userService.checkUserByPhoneNumber(postUserReq.getPhoneNumber())){
+            return new BaseResponse<>(POST_USERS_EXISTS_PHONE);
         }
+        //아이디 정규식
+        if(!isRegexUserName(postUserReq.getUsername())){
+            return new BaseResponse<>(POST_USERS_INVALID_USERNAME);
+        }
+        //아이디 중복 검사
+        if(userService.checkUserByUserName(postUserReq.getUsername())){
+            return new BaseResponse<>(POST_USERS_EXISTS_USERNAME);
+        }
+        //비밀번호 정규식
+        if(!isRegexPassword(postUserReq.getPassword())){
+            return new BaseResponse<>(POST_USERS_INVALID_PASSWORD);
+        }
+        //약관 동의 검사
+        if(!postUserReq.isTermsOfService() || !postUserReq.isDataBasedPolicy() || !postUserReq.isLocationBasedPolicy()){
+            return new BaseResponse<>(POST_USERS_INVALID_TERMS);
+        }
+
         PostUserRes postUserRes = userService.createUser(postUserReq);
         return new BaseResponse<>(postUserRes);
     }
