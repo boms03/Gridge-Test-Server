@@ -3,6 +3,7 @@ package com.example.demo.src.user.entity;
 import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.src.mapping.userAgree.UserAgree;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -45,6 +46,7 @@ public class User extends BaseEntity {
     // Oauth 생일 정보 필수가 아니라서 nullable
     private Date birth;
 
+    @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime lastAgreedAt;
 
