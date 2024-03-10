@@ -31,12 +31,6 @@ public class UserService {
 
     //POST
     public PostUserRes createUser(PostUserReq postUserReq) {
-        //중복 체크
-        Optional<User> checkUser = userRepository.findByEmailAndState(postUserReq.getEmail(), ACTIVE);
-        if(checkUser.isPresent() == true){
-            throw new BaseException(POST_USERS_EXISTS_EMAIL);
-        }
-
         String encryptPwd;
         try {
             encryptPwd = new SHA256().encrypt(postUserReq.getPassword());
@@ -126,5 +120,15 @@ public class UserService {
     public GetUserRes getUserByEmail(String email) {
         User user = userRepository.findByEmailAndState(email, ACTIVE).orElseThrow(() -> new BaseException(NOT_FIND_USER));
         return new GetUserRes(user);
+    }
+
+    public boolean checkUserByPhoneNumber(String phoneNumber) {
+        Optional<User> checkUser = userRepository.findByPhoneNumber(phoneNumber);
+        return checkUser.isPresent();
+    }
+
+    public boolean checkUserByUserName(String username) {
+        Optional<User> checkUser = userRepository.findByUsername(username);
+        return checkUser.isPresent();
     }
 }
