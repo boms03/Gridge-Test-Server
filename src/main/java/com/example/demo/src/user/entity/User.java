@@ -1,5 +1,6 @@
 package com.example.demo.src.user.entity;
 
+import com.example.demo.common.Constant.*;
 import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.src.mapping.userAgree.UserAgree;
 import lombok.*;
@@ -26,19 +27,23 @@ public class User extends BaseEntity {
     @Column(length = 20)
     private String email;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String phoneNumber;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String username;
 
-    @Column(nullable = false)
+    @Column(length = 300)
     private String password;
 
     @Column(nullable = false, length = 30)
     private String name;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(20)")
+    private UserRole role;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isOAuth;
 
     private String provider;
@@ -47,7 +52,7 @@ public class User extends BaseEntity {
     private Date birth;
 
     @UpdateTimestamp
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime lastAgreedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -55,7 +60,7 @@ public class User extends BaseEntity {
 
 
     @Builder
-    public User(Long id, String email, String phoneNumber, String username, String password, String name, boolean isOAuth, Date birth, LocalDateTime lastAgreedAt, String provider) {
+    public User(Long id, String email, String phoneNumber, String username, String password, String name, boolean isOAuth, Date birth, LocalDateTime lastAgreedAt, String provider, UserRole role) {
         this.email = email;
         this.id = id;
         this.phoneNumber = phoneNumber;
@@ -66,6 +71,7 @@ public class User extends BaseEntity {
         this.birth = birth;
         this.lastAgreedAt = lastAgreedAt;
         this.provider = provider;
+        this.role = role;
     }
 
     public void updateName(String name) {
@@ -73,7 +79,7 @@ public class User extends BaseEntity {
     }
 
     public void deleteUser() {
-        this.state = State.INACTIVE;
+        this.state = UserState.WITHDRAW;
     }
 
 }
