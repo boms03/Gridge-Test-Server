@@ -6,5 +6,19 @@ public class Constant {
         KAKAO,
         NAVER
     }
+
+    public enum UserState {
+        ACTIVE,
+        DORMANT,
+        WITHDRAW,
+        BANNED,
+    }
+
+    public enum UserRole {
+        USER,
+        ADMIN
+    }
+
+
 }
 

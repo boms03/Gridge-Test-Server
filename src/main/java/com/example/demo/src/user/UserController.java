@@ -2,16 +2,21 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.common.Constant.SocialLoginType;
+import com.example.demo.common.oauth.KakaoOauth;
 import com.example.demo.common.oauth.OAuthService;
 import com.example.demo.utils.JwtService;
+import com.nimbusds.jose.shaded.json.parser.ParseException;
 import lombok.RequiredArgsConstructor;
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponse;
 import com.example.demo.src.user.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,16 +27,13 @@ import static com.example.demo.utils.ValidationRegex.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/app/users")
 public class UserController {
-
 
     private final UserService userService;
 
     private final OAuthService oAuthService;
 
     private final JwtService jwtService;
-
 
     /**
      * 회원가입 API
@@ -40,7 +42,7 @@ public class UserController {
      */
     // Body
     @ResponseBody
-    @PostMapping("/signup")
+    @PostMapping("/auth/signup")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
         // 전화번호 정규식
         if(!isRegexPhoneNumber(postUserReq.getPhoneNumber())){
@@ -113,9 +115,9 @@ public class UserController {
      */
     @ResponseBody
     @PatchMapping("/{userId}")
-    public BaseResponse<String> modifyUserName(@PathVariable("userId") Long userId, @RequestBody PatchUserReq patchUserReq){
+    public BaseResponse<String> modifyUserName(@PathVariable("userId") Long userId, @RequestBody PatchUserReq patchUserReq, HttpServletRequest request){
 
-        Long jwtUserId = jwtService.getUserId();
+        Long jwtUserId = jwtService.getUserId(request);
 
         userService.modifyUserName(userId, patchUserReq);
 
@@ -131,8 +133,8 @@ public class UserController {
      */
     @ResponseBody
     @DeleteMapping("/{userId}")
-    public BaseResponse<String> deleteUser(@PathVariable("userId") Long userId){
-        Long jwtUserId = jwtService.getUserId();
+    public BaseResponse<String> deleteUser(@PathVariable("userId") Long userId, HttpServletRequest request){
+        Long jwtUserId = jwtService.getUserId(request);
 
         userService.deleteUser(userId);
 
@@ -146,10 +148,18 @@ public class UserController {
      * @return BaseResponse<PostLoginRes>
      */
     @ResponseBody
-    @PostMapping("/logIn")
+    @PostMapping("/auth/logIn")
     public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq){
-        // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
-        // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
+        //아이디 정규식
+        if(!isRegexUserName(postLoginReq.getUsername())){
+            return new BaseResponse<>(POST_USERS_INVALID_USERNAME);
+        }
+
+        //비밀번호 정규식
+        if(!isRegexPassword(postLoginReq.getPassword())){
+            return new BaseResponse<>(POST_USERS_INVALID_PASSWORD);
+        }
+
         PostLoginRes postLoginRes = userService.logIn(postLoginReq);
         return new BaseResponse<>(postLoginRes);
     }
@@ -157,7 +167,7 @@ public class UserController {
 
     /**
      * 유저 소셜 가입, 로그인 인증으로 리다이렉트 해주는 url
-     * [GET] /app/users/auth/:socialLoginType/login
+     * [GET] /auth/:socialLoginType/login
      * @return void
      */
     @GetMapping("/auth/{socialLoginType}/login")
@@ -169,20 +179,14 @@ public class UserController {
 
     /**
      * Social Login API Server 요청에 의한 callback 을 처리
-     * @param socialLoginPath (GOOGLE, FACEBOOK, NAVER, KAKAO)
      * @param code API Server 로부터 넘어오는 code
      * @return SNS Login 요청 결과로 받은 Json 형태의 java 객체 (access_token, jwt_token, user_num 등)
      */
-    @ResponseBody
-    @GetMapping(value = "/auth/{socialLoginType}/login/callback")
-    public BaseResponse<GetSocialOAuthRes> socialLoginCallback(
-            @PathVariable(name = "socialLoginType") String socialLoginPath,
-            @RequestParam(name = "code") String code) throws IOException, BaseException{
-        log.info(">> 소셜 로그인 API 서버로부터 받은 code : {}", code);
-        SocialLoginType socialLoginType = SocialLoginType.valueOf(socialLoginPath.toUpperCase());
-        GetSocialOAuthRes getSocialOAuthRes = oAuthService.oAuthLoginOrJoin(socialLoginType,code);
+    @GetMapping("/login/kakao")
+    public BaseResponse<GetSocialOAuthRes> kakao(
+            @RequestParam(name= "code") String code
+    ) throws IOException {
+        GetSocialOAuthRes getSocialOAuthRes = oAuthService.oAuthLoginOrJoin(SocialLoginType.KAKAO,code);
         return new BaseResponse<>(getSocialOAuthRes);
     }
-
-
 }
