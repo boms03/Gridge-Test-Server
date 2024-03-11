@@ -13,25 +13,21 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostUserReq {
-    private String email;
     private String phoneNumber;
     private String username;
     private String password;
     private String name;
     private Date birth;
-    private boolean isOAuth;
     private boolean isTermsOfService;
     private boolean isDataBasedPolicy;
     private boolean isLocationBasedPolicy;
 
     public User toEntity() {
         return User.builder()
-                .email(this.email)
                 .phoneNumber(this.phoneNumber)
                 .password(this.password)
                 .username(this.username)
                 .name(this.name)
-                .isOAuth(this.isOAuth)
                 .birth(this.birth)
                 .build();
     }

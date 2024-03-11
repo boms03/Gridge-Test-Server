@@ -1,6 +1,8 @@
 package com.example.demo.common.config;
 
 //import com.example.demo.common.oauth.OAuthService;
+import com.example.demo.common.jwt.JwtFilter;
+import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,27 +27,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebSecurityConfig{
 
+    private final JwtService jwtService;
+
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+
                 .cors(Customizer.withDefaults())
                 .csrf(CsrfConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 .formLogin().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
-                    .antMatchers("/","/api-docs",
+                    .antMatchers("/",
                             "/swagger-ui-custom.html",
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
                             "/api-docs/**",
                             "/swagger-ui.html",
+                            "/favicon.ico",
                             "/oauth2/**",
-                            "/app/users/**").permitAll()
+                            "/app/users/**","/login/kakao/**","/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .oauth2Login(oauth2 -> oauth2
-                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*")
-                ));
+                .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
 
         return  httpSecurity.build();
     }
