@@ -2,22 +2,23 @@ package com.example.demo.utils;
 
 
 import com.example.demo.common.exceptions.BaseException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 
 import static com.example.demo.common.response.BaseResponseStatus.EMPTY_JWT;
 import static com.example.demo.common.response.BaseResponseStatus.INVALID_JWT;
 
 @Service
+@Slf4j
 public class JwtService {
 
     @Value("${jwt.secret-key}")
@@ -40,12 +41,11 @@ public class JwtService {
     }
 
     /*
-    Header에서 X-ACCESS-TOKEN 으로 JWT 추출
+    Header에서 Authorization 으로 JWT 추출
     @return String
      */
-    public String getJwt(){
-        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
-        return request.getHeader("X-ACCESS-TOKEN");
+    public String getJwt(HttpServletRequest request){
+        return request.getHeader("Authorization");
     }
 
     /*
@@ -53,9 +53,9 @@ public class JwtService {
     @return Long
     @throws BaseException
      */
-    public Long getUserId() throws BaseException{
+    public Long getUserId(HttpServletRequest request) throws BaseException{
         //1. JWT 추출
-        String accessToken = getJwt();
+        String accessToken = getJwt(request);
         if(accessToken == null || accessToken.length() == 0){
             throw new BaseException(EMPTY_JWT);
         }
@@ -73,5 +73,28 @@ public class JwtService {
         // 3. userIdx 추출
         return claims.getBody().get("userId",Long.class);
     }
+
+    public boolean validateToken(HttpServletRequest request) {
+        String accessToken = getJwt(request);
+        if (accessToken == null || accessToken.length() == 0) {
+            throw new BaseException(EMPTY_JWT);
+        }
+        try {
+            Jwts.parser().setSigningKey(JWT_SECRET_KEY).parseClaimsJws(accessToken);
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT signature");
+            return false;
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT token");
+            return false;
+        } catch (IllegalArgumentException e) {
+            log.error("JWT token is invalid");
+            return false;
+        }
+        return true;
+    }
+
+
+
 
 }
