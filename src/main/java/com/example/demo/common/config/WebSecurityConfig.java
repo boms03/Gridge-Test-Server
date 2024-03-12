@@ -1,6 +1,9 @@
 package com.example.demo.common.config;
 
 //import com.example.demo.common.oauth.OAuthService;
+import com.example.demo.common.jwt.AuthenticationAccessDeniedFilter;
+import com.example.demo.common.jwt.JwtFilter;
+import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +26,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebSecurityConfig{
 
+    private final JwtService jwtService;
+    private final AuthenticationAccessDeniedFilter authenticationAccessDeniedFilter;
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -41,10 +46,9 @@ public class WebSecurityConfig{
                             "/app/users/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .oauth2Login(oauth2 -> oauth2
-                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*")
-                ));
-
+                .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .accessDeniedHandler(authenticationAccessDeniedFilter);
         return  httpSecurity.build();
     }
 
