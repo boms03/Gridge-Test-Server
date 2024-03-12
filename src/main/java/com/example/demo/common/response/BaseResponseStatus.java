@@ -44,6 +44,12 @@ public enum BaseResponseStatus {
     INVALID_OAUTH_TYPE(false, HttpStatus.BAD_REQUEST.value(), "알 수 없는 소셜 로그인 형식입니다."),
     KAKAO_ERROR(false, HttpStatus.BAD_REQUEST.value(), "카카오 토큰 오류입니다."),
 
+    ACCESS_DENIED(false, HttpStatus.FORBIDDEN.value(), "접근할 수 없는 계정입니다"),
+
+    BANNED_USER(false, HttpStatus.FORBIDDEN.value(), "정지된 계정입니다"),
+    WITHDRAW_USER(false, HttpStatus.FORBIDDEN.value(), "탈퇴한 계정입니다"),
+    RENEW_USER(false, HttpStatus.FORBIDDEN.value(), "이용약관 재동의가 필요한 계정입니다"),
+
 
 
     /**
