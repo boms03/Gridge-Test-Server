@@ -4,13 +4,20 @@ package com.example.demo.src.user;
 
 import com.example.demo.common.Constant.*;
 import com.example.demo.common.exceptions.BaseException;
+import com.example.demo.src.mapping.UserAgreeRepository;
+import com.example.demo.src.mapping.userAgree.UserAgree;
+import com.example.demo.src.terms.TermsRepository;
+import com.example.demo.src.terms.entity.Terms;
 import com.example.demo.src.user.entity.User;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +32,8 @@ import static com.example.demo.common.response.BaseResponseStatus.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserAgreeRepository userAgreeRepository;
+    private final TermsRepository termsRepository;
     private final JwtService jwtService;
 
 
@@ -39,6 +48,16 @@ public class UserService {
         }
 
         User saveUser = userRepository.save(postUserReq.toEntity());
+        List<Terms> termsList = termsRepository.findAll();
+
+        termsList.forEach(termsEntity -> {
+                    UserAgree userAgree = UserAgree.builder()
+                        .user(saveUser)
+                        .terms(termsEntity).build();
+                    userAgreeRepository.save(userAgree);
+                });
+
+
         return new PostUserRes(saveUser.getId());
 
     }
@@ -96,8 +115,17 @@ public class UserService {
     }
 
     public PostLoginRes logIn(PostLoginReq postLoginReq) {
-        User user = userRepository.findByUsernameAndState(postLoginReq.getUsername(), UserState.ACTIVE)
+        User user = userRepository.findByUsername(postLoginReq.getUsername())
                 .orElseThrow(() -> new BaseException(NOT_FIND_USER));
+
+        // 유저 상태 유효성 검사
+        if(user.getState() == UserState.BANNED){
+            throw new BaseException(BANNED_USER);
+        } else if (user.getState() == UserState.WITHDRAW){
+            throw new BaseException(WITHDRAW_USER);
+        } else if (user.getState() == UserState.RENEW){
+            throw new BaseException(RENEW_USER);
+        }
 
         String encryptPwd;
         try {
