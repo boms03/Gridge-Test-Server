@@ -1,11 +1,13 @@
 package com.example.demo.src.user.model;
 
+import com.example.demo.common.Constant;
 import com.example.demo.src.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -29,6 +31,8 @@ public class PostUserReq {
                 .username(this.username)
                 .name(this.name)
                 .birth(this.birth)
+                .role(Constant.UserRole.USER)
+                .lastAgreedAt(LocalDateTime.now())
                 .build();
     }
 }
