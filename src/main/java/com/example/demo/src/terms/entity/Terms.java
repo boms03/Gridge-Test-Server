@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "TERMS")
-public class Terms extends BaseEntity {
+public class Terms {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class Terms extends BaseEntity {
     @Column(nullable = false, length = 100, columnDefinition = "TEXT")
     private String body;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, columnDefinition = "TINYINT")
     private Boolean optional;
 
     @OneToMany(mappedBy = "terms", cascade = CascadeType.ALL)
