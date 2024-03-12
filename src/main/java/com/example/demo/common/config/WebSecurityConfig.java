@@ -13,7 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,23 +29,29 @@ import java.util.List;
 public class WebSecurityConfig{
 
     private final JwtService jwtService;
+
     private final AuthenticationAccessDeniedFilter authenticationAccessDeniedFilter;
+  
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+
                 .cors(Customizer.withDefaults())
                 .csrf(CsrfConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 .formLogin().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
-                    .antMatchers("/","/api-docs",
+                    .antMatchers("/",
                             "/swagger-ui-custom.html",
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
                             "/api-docs/**",
                             "/swagger-ui.html",
+                            "/favicon.ico",
                             "/oauth2/**",
-                            "/app/users/**").permitAll()
+                            "/app/users/**","/login/kakao/**","/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
