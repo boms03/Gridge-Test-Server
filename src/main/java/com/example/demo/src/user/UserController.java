@@ -52,6 +52,10 @@ public class UserController {
         if(userService.checkUserByPhoneNumber(postUserReq.getPhoneNumber())){
             return new BaseResponse<>(POST_USERS_EXISTS_PHONE);
         }
+        // 전화번호 길이 검사
+        if(postUserReq.getPhoneNumber().length()>20){
+            postUserReq.setPhoneNumber(postUserReq.getPhoneNumber().substring(0,19));
+        }
         //아이디 정규식
         if(!isRegexUserName(postUserReq.getUsername())){
             return new BaseResponse<>(POST_USERS_INVALID_USERNAME);
@@ -60,9 +64,17 @@ public class UserController {
         if(userService.checkUserByUserName(postUserReq.getUsername())){
             return new BaseResponse<>(POST_USERS_EXISTS_USERNAME);
         }
-        //비밀번호 정규식
+        // 아이디 길이 검사
+        if(postUserReq.getUsername().length()>20){
+            postUserReq.setUsername(postUserReq.getUsername().substring(0,19));
+        }
+        // 비밀번호 정규식
         if(!isRegexPassword(postUserReq.getPassword())){
             return new BaseResponse<>(POST_USERS_INVALID_PASSWORD);
+        }
+        //이름 길이 검사
+        if(postUserReq.getName().length()>20){
+            postUserReq.setName(postUserReq.getName().substring(0,19));
         }
         //약관 동의 검사
         if(!postUserReq.isTermsOfService() || !postUserReq.isDataBasedPolicy() || !postUserReq.isLocationBasedPolicy()){

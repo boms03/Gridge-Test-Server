@@ -1,12 +1,10 @@
 package com.example.demo.src.mapping.userAgree;
 
 
+import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.src.terms.entity.Terms;
 import com.example.demo.src.user.entity.User;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -15,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "USER_AGREE")
-public class UserAgree {
+public class UserAgree extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +26,10 @@ public class UserAgree {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "terms_id", nullable = false)
     private Terms terms;
+
+    @Builder
+    public UserAgree(User user, Terms terms){
+        this.user = user;
+        this.terms = terms;
+    }
 }
