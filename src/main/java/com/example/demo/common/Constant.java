@@ -12,6 +12,7 @@ public class Constant {
         DORMANT,
         WITHDRAW,
         BANNED,
+        RENEW
     }
 
     public enum UserRole {

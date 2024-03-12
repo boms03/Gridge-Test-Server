@@ -24,7 +24,4 @@ public class BaseEntity {
     @Column(name = "updatedAt", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 10)
-    protected UserState state = UserState.ACTIVE;
 }

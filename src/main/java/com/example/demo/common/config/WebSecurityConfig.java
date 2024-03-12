@@ -1,6 +1,7 @@
 package com.example.demo.common.config;
 
 //import com.example.demo.common.oauth.OAuthService;
+import com.example.demo.common.jwt.AuthenticationAccessDeniedFilter;
 import com.example.demo.common.jwt.JwtFilter;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class WebSecurityConfig{
 
     private final JwtService jwtService;
 
+    private final AuthenticationAccessDeniedFilter authenticationAccessDeniedFilter;
+  
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -51,8 +54,9 @@ public class WebSecurityConfig{
                             "/app/users/**","/login/kakao/**","/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .accessDeniedHandler(authenticationAccessDeniedFilter);
         return  httpSecurity.build();
     }
 

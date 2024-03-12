@@ -1,6 +1,6 @@
 package com.example.demo.src.user.entity;
 
-import com.example.demo.common.Constant.*;
+import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.src.mapping.userAgree.UserAgree;
 import lombok.*;
@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = false)
 @Getter
+@Setter
 @Entity // 필수, Class 를 Database Table화 해주는 것이다
 @Table(name = "USER") // Table 이름을 명시해주지 않으면 class 이름을 Table 이름으로 대체한다.
 public class User extends BaseEntity {
@@ -41,12 +42,16 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(20)")
-    private UserRole role;
+    private Constant.UserRole role;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false, columnDefinition = "TINYINT default 0")
     private boolean isOAuth;
 
     private String provider;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state", nullable = false, length = 10)
+    protected Constant.UserState state = Constant.UserState.ACTIVE;
 
     // Oauth 생일 정보 필수가 아니라서 nullable
     private Date birth;
@@ -79,7 +84,7 @@ public class User extends BaseEntity {
     }
 
     public void deleteUser() {
-        this.state = UserState.WITHDRAW;
+        this.state = Constant.UserState.WITHDRAW;
     }
 
 }
