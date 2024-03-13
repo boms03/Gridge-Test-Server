@@ -7,6 +7,12 @@ public class Constant {
         NAVER
     }
 
+    public enum State {
+        ACTIVE,
+        INACTIVE
+
+    }
+
     public enum UserState {
         ACTIVE,
         DORMANT,
