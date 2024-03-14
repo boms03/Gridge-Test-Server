@@ -2,7 +2,9 @@ package com.example.demo.src.user.entity;
 
 import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;
-import com.example.demo.src.mapping.userAgree.UserAgree;
+import com.example.demo.src.board.entity.BoardLike;
+import com.example.demo.src.mapping.userAgree.entity.UserAgree;
+import com.example.demo.src.board.entity.Board;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -63,9 +65,21 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserAgree> userAgreeList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Board> boardList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "followee", cascade = CascadeType.ALL)
+    private List<Follow> followeeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    private List<Follow> followerList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<BoardLike> boardLikeList = new ArrayList<>();
+
 
     @Builder
-    public User(Long id, String email, String phoneNumber, String username, String password, String name, boolean isOAuth, Date birth, LocalDateTime lastAgreedAt, String provider, UserRole role) {
+    public User(Long id, String email, String phoneNumber, String username, String password, String name, boolean isOAuth, Date birth, LocalDateTime lastAgreedAt, String provider, Constant.UserRole role) {
         this.email = email;
         this.id = id;
         this.phoneNumber = phoneNumber;
