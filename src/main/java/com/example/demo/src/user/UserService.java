@@ -4,8 +4,8 @@ package com.example.demo.src.user;
 
 import com.example.demo.common.Constant.*;
 import com.example.demo.common.exceptions.BaseException;
-import com.example.demo.src.mapping.UserAgreeRepository;
-import com.example.demo.src.mapping.userAgree.UserAgree;
+import com.example.demo.src.mapping.userAgree.UserAgreeRepository;
+import com.example.demo.src.mapping.userAgree.entity.UserAgree;
 import com.example.demo.src.terms.TermsRepository;
 import com.example.demo.src.terms.entity.Terms;
 import com.example.demo.src.user.entity.User;
@@ -13,11 +13,8 @@ import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
