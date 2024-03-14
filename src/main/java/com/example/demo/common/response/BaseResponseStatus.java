@@ -50,6 +50,7 @@ public enum BaseResponseStatus {
     WITHDRAW_USER(false, HttpStatus.FORBIDDEN.value(), "탈퇴한 계정입니다"),
     RENEW_USER(false, HttpStatus.FORBIDDEN.value(), "이용약관 재동의가 필요한 계정입니다"),
 
+    EMPTY_FILE(false, HttpStatus.BAD_REQUEST.value(), "업로드된 파일이 없습니다"),
 
 
     /**
@@ -60,10 +61,11 @@ public enum BaseResponseStatus {
     PASSWORD_ENCRYPTION_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "비밀번호 복호화에 실패하였습니다."),
 
-
     MODIFY_FAIL_USERNAME(false,HttpStatus.INTERNAL_SERVER_ERROR.value(),"유저네임 수정 실패"),
     DELETE_FAIL_USERNAME(false,HttpStatus.INTERNAL_SERVER_ERROR.value(),"유저 삭제 실패"),
     MODIFY_FAIL_MEMO(false,HttpStatus.INTERNAL_SERVER_ERROR.value(),"메모 수정 실패"),
+
+    UPLOAD_FAILED(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "파일 업로드 실패하였습니다"),
 
     UNEXPECTED_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "예상치 못한 에러가 발생했습니다.");
 
