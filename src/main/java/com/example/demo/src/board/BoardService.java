@@ -12,8 +12,8 @@ import com.example.demo.src.board.entity.Board;
 import com.example.demo.src.image.ImageService;
 import com.example.demo.src.image.entity.Image;
 import com.example.demo.src.mapping.boardLike.BoardLikeRepository;
+import com.example.demo.src.mapping.follow.FollowService;
 import com.example.demo.src.user.UserRepository;
-import com.example.demo.src.user.UserService;
 import com.example.demo.src.user.entity.User;
 import com.example.demo.utils.Time;
 import com.google.cloud.storage.Bucket;
@@ -41,9 +41,9 @@ public class BoardService {
     private final BoardLikeRepository boardLikeRepository;
     private final UserRepository userRepository;
     private final Bucket bucket;
-    private final UserService userService;
     private final ImageService imageService;
     private final CommentService commentService;
+    private final FollowService followService;
     private final int pageSize = 10;
 
     public void createBoard(List<MultipartFile> files, PostBoardReq postBoardReq, Long userId){
@@ -110,7 +110,7 @@ public class BoardService {
 
     public GetBoardsRes fetchBoardPagesBy(Long lastBoardId, Long userId) {
 
-        List<User> followers = userService.findFollowings(userId);
+        List<User> followers = followService.findFollowings(userId);
         Page<Board> boards = fetchPages(lastBoardId, pageSize, followers);
         List<GetBoardRes> boardsList = boards.stream()
                 .map(this::buildGetBoardRes)
