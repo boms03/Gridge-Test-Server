@@ -2,18 +2,13 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.common.Constant.SocialLoginType;
-import com.example.demo.common.oauth.KakaoOauth;
 import com.example.demo.common.oauth.OAuthService;
+import com.example.demo.src.mapping.follow.FollowService;
 import com.example.demo.utils.JwtService;
-import com.nimbusds.jose.shaded.json.parser.ParseException;
 import lombok.RequiredArgsConstructor;
-import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponse;
 import com.example.demo.src.user.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +23,8 @@ import static com.example.demo.utils.ValidationRegex.*;
 @RequiredArgsConstructor
 @RestController
 public class UserController {
+
+    private final FollowService followService;
 
     private final UserService userService;
 
@@ -200,5 +197,27 @@ public class UserController {
     ) throws IOException {
         GetSocialOAuthRes getSocialOAuthRes = oAuthService.oAuthLoginOrJoin(SocialLoginType.KAKAO,code);
         return new BaseResponse<>(getSocialOAuthRes);
+    }
+
+    @PostMapping("/follow")
+    public BaseResponse<String> createFollow(
+            @RequestParam String followeeUsername,
+            HttpServletRequest request
+    ){
+        Long id = jwtService.getUserId(request);
+        followService.createFollow(followeeUsername,id);
+        String response = "팔로우 완료";
+        return new BaseResponse<>(response);
+    }
+
+    @DeleteMapping("/follow")
+    public BaseResponse<String> deleteFollow(
+            @RequestParam String followeeUsername,
+            HttpServletRequest request
+    ){
+        Long id = jwtService.getUserId(request);
+        followService.deleteFollow(followeeUsername,id);
+        String response = "팔로우 취소 완료";
+        return new BaseResponse<>(response);
     }
 }
