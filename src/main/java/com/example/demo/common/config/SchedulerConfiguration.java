@@ -1,19 +1,13 @@
 package com.example.demo.common.config;
 
-import com.example.demo.src.mapping.UserAgreeRepository;
-import com.example.demo.src.mapping.userAgree.UserAgree;
-import com.example.demo.src.user.UserRepository;
-import com.example.demo.src.user.entity.User;
+import com.example.demo.src.mapping.userAgree.UserAgreeRepository;
+import com.example.demo.src.mapping.userAgree.entity.UserAgree;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import com.example.demo.common.Constant;
 
 @Component
