@@ -20,13 +20,14 @@ public class GetBoardRes {
     private String previewContent;
     private String location;
     private Long countLike;
+    private boolean isLiked;
     private String profileImageUrl;
     private List<String> imageUrlList;
     private String createdAt;
     private boolean isShortened;
     private Long countComment;
     private GetCommentsRes getCommentsRes;
-    public GetBoardRes(Board board, String previewContent, boolean isShortened, Long countLike, List<String> imageUrlList, String formattedTime, GetCommentsRes getCommentsRes, Long countComment){
+    public GetBoardRes(Board board, String previewContent, boolean isShortened, Long countLike, boolean isLiked, List<String> imageUrlList, String formattedTime, GetCommentsRes getCommentsRes, Long countComment){
         this.boardId = board.getId();
         this.username = board.getUser().getUsername();
         this.content = board.getContent();
@@ -34,6 +35,7 @@ public class GetBoardRes {
         this.isShortened = isShortened;
         this.location = board.getLocation();
         this.countLike = countLike;
+        this.isLiked = isLiked;
         this.imageUrlList = imageUrlList;
         this.createdAt = formattedTime;
         this.getCommentsRes = getCommentsRes;
