@@ -4,6 +4,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.common.Constant.*;
 import com.example.demo.common.exceptions.BaseException;
+import com.example.demo.src.mapping.follow.FollowRepository;
 import com.example.demo.src.mapping.userAgree.UserAgreeRepository;
 import com.example.demo.src.mapping.userAgree.entity.UserAgree;
 import com.example.demo.src.terms.TermsRepository;
