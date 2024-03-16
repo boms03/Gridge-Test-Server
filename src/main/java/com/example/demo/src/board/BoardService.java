@@ -94,7 +94,7 @@ public class BoardService {
         board.deleteBoard();
     }
 
-    public GetBoardRes getBoard(Long boardId){
+    public GetBoardRes getBoard(Long boardId,Long userId){
 
         Board board = boardRepository.findByIdAndState(boardId,Constant.State.ACTIVE)
                 .orElseThrow(()->new BaseException(BaseResponseStatus.NOT_FIND_BOARD));
@@ -105,7 +105,7 @@ public class BoardService {
             throw new BaseException(BaseResponseStatus.BANNED_USER);
         }
 
-        return buildGetBoardRes(board);
+        return buildGetBoardRes(board,userId);
     }
 
     public GetBoardsRes fetchBoardPagesBy(Long lastBoardId, Long userId) {
@@ -113,7 +113,7 @@ public class BoardService {
         List<User> followers = followService.findFollowings(userId);
         Page<Board> boards = fetchPages(lastBoardId, pageSize, followers);
         List<GetBoardRes> boardsList = boards.stream()
-                .map(this::buildGetBoardRes)
+                .map(board -> buildGetBoardRes(board,userId))
                 .collect(Collectors.toList());
 
         if(boardsList.isEmpty()){
@@ -172,7 +172,11 @@ public class BoardService {
         return !previewContent.equals(content);
     }
 
-    public GetBoardRes buildGetBoardRes(Board board){
+    public boolean isLiked(Long boardId, Long userId){
+        return boardLikeRepository.findByBoardIdAndUserId(boardId,userId).isPresent();
+    }
+
+    public GetBoardRes buildGetBoardRes(Board board, Long userId){
 
         List <String> imageUrlList = imageService.getImageUrlList(board);
 
@@ -188,7 +192,9 @@ public class BoardService {
 
         Long countComment = commentService.countCommentsOfBoard(board);
 
-        return new GetBoardRes(board, previewContent, isShortened, likes,imageUrlList, formattedTime, getCommentRes, countComment);
+        boolean isLiked = isLiked(board.getId(),userId);
+
+        return new GetBoardRes(board, previewContent, isShortened, likes, isLiked, imageUrlList, formattedTime, getCommentRes, countComment);
     }
 
 }
