@@ -1,6 +1,8 @@
 package com.example.demo.src.board;
 
+import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponse;
+import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.board.model.*;
 import com.example.demo.src.mapping.boardReport.BoardReportService;
 import com.example.demo.utils.JwtService;
@@ -27,6 +29,13 @@ public class BoardController {
             @RequestPart(value = "requestDto") PostBoardReq postBoardReq,
             HttpServletRequest request
     ){
+        if(files.size()>10){
+            throw new BaseException(BaseResponseStatus.LIMIT_FILE);
+        }
+        if(postBoardReq.getContent().length() > 2200 || postBoardReq.getContent().isEmpty()){
+            throw new BaseException(BaseResponseStatus.INVALID_LENGTH_BOARD);
+        }
+
         Long id = jwtService.getUserId(request);
         boardService.createBoard(files,postBoardReq,id);
         String response = "게시물 업로드 완료";
@@ -35,9 +44,11 @@ public class BoardController {
 
     @GetMapping("")
     public BaseResponse<GetBoardRes> getBoard(
-            @RequestParam Long boardId
+            @RequestParam Long boardId,
+            HttpServletRequest request
     ){
-        GetBoardRes getBoardRes = boardService.getBoard(boardId);
+        Long id = jwtService.getUserId(request);
+        GetBoardRes getBoardRes = boardService.getBoard(boardId, id);
 
         return new BaseResponse<>(getBoardRes);
     }
