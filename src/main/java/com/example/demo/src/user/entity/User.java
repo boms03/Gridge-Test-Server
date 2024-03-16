@@ -2,7 +2,10 @@ package com.example.demo.src.user.entity;
 
 import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;
-import com.example.demo.src.board.entity.BoardLike;
+import com.example.demo.src.mapping.boardLike.entity.BoardLike;
+import com.example.demo.src.comment.entity.Comment;
+import com.example.demo.src.mapping.boardReport.entity.BoardReport;
+import com.example.demo.src.mapping.follow.entity.Follow;
 import com.example.demo.src.mapping.userAgree.entity.UserAgree;
 import com.example.demo.src.board.entity.Board;
 import lombok.*;
@@ -68,6 +71,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Board> boardList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<BoardReport> boardReportList = new ArrayList<>();
+
     @OneToMany(mappedBy = "followee", cascade = CascadeType.ALL)
     private List<Follow> followeeList = new ArrayList<>();
 
@@ -76,6 +82,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<BoardLike> boardLikeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Comment> commentList = new ArrayList<>();
 
 
     @Builder
