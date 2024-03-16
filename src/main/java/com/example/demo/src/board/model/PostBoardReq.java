@@ -15,13 +15,11 @@ import lombok.Setter;
 public class PostBoardReq {
     private String content;
     private String location;
-    private Constant.State state;
 
     public Board toEntity(User user) {
         return Board.builder()
                 .content(this.content)
                 .location(this.location)
-                .state(Constant.State.ACTIVE)
                 .user(user)
                 .build();
     }
