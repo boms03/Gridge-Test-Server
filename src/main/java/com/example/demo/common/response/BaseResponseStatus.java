@@ -50,6 +50,8 @@ public enum BaseResponseStatus {
     RENEW_USER(false, HttpStatus.FORBIDDEN.value(), "이용약관 재동의가 필요한 계정입니다"),
 
     EMPTY_FILE(false, HttpStatus.BAD_REQUEST.value(), "업로드된 파일이 없습니다"),
+    LIMIT_FILE(false, HttpStatus.BAD_REQUEST.value(), "업로드된 파일이 10개 초과입니다"),
+
     NOT_FIND_BOARD(false,HttpStatus.NOT_FOUND.value(),"일치하는 게시물이 없습니다."),
     NOT_FIND_IMAGE(false, HttpStatus.NOT_FOUND.value(), "일치하는 이미지가 없습니다"),
     NOT_FIND_FOLLOW(false, HttpStatus.NOT_FOUND.value(), "일치하는 팔로우 관계가 없습니다"),
@@ -59,6 +61,9 @@ public enum BaseResponseStatus {
 
     OWN_REPORT(false, HttpStatus.BAD_REQUEST.value(), "자신의 게시물을 신고할 수 없습니다"),
     DUPLICATE_REPORT(false, HttpStatus.BAD_REQUEST.value(), "이미 신고한 게시물 입니다"),
+
+    INVALID_LENGTH_COMMENT(false, HttpStatus.BAD_REQUEST.value(), "댓글은 1자 이상 2200자 이하 이어야 합니다"),
+    INVALID_LENGTH_BOARD(false, HttpStatus.BAD_REQUEST.value(), "게시물 본문은 1자 이상 2200자 이하 이어야 합니다"),
 
 
     /**
