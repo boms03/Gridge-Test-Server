@@ -1,8 +1,10 @@
 package com.example.demo.src.mapping.boardReport.entity;
 
 import com.example.demo.common.entity.BaseEntity;
+import com.example.demo.src.board.BoardRepository;
 import com.example.demo.src.board.entity.Board;
 import com.example.demo.src.report.entity.Report;
+import com.example.demo.src.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "POST_REPORT")
+@Table(name = "BOARD_REPORT")
 public class BoardReport extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
@@ -26,5 +28,16 @@ public class BoardReport extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="board_id", nullable = false)
     private Board board;
+
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable = false)
+    private User user;
+
+    @Builder
+    public BoardReport(Report report, Board board, User user){
+        this.report = report;
+        this.board = board;
+        this.user = user;
+    }
 
 }

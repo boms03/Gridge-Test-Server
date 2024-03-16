@@ -21,6 +21,12 @@ public class Constant {
         RENEW
     }
 
+    public enum BoardState {
+        VISIBLE,
+
+        INVISIBLE
+    }
+
     public enum UserRole {
         USER,
         ADMIN

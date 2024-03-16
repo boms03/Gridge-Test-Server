@@ -45,12 +45,20 @@ public enum BaseResponseStatus {
     KAKAO_ERROR(false, HttpStatus.BAD_REQUEST.value(), "카카오 토큰 오류입니다."),
 
     ACCESS_DENIED(false, HttpStatus.FORBIDDEN.value(), "접근할 수 없는 계정입니다"),
-
     BANNED_USER(false, HttpStatus.FORBIDDEN.value(), "정지된 계정입니다"),
     WITHDRAW_USER(false, HttpStatus.FORBIDDEN.value(), "탈퇴한 계정입니다"),
     RENEW_USER(false, HttpStatus.FORBIDDEN.value(), "이용약관 재동의가 필요한 계정입니다"),
 
     EMPTY_FILE(false, HttpStatus.BAD_REQUEST.value(), "업로드된 파일이 없습니다"),
+    NOT_FIND_BOARD(false,HttpStatus.NOT_FOUND.value(),"일치하는 게시물이 없습니다."),
+    NOT_FIND_IMAGE(false, HttpStatus.NOT_FOUND.value(), "일치하는 이미지가 없습니다"),
+    NOT_FIND_FOLLOW(false, HttpStatus.NOT_FOUND.value(), "일치하는 팔로우 관계가 없습니다"),
+    NOT_FIND_COMMENT(false, HttpStatus.NOT_FOUND.value(), "일치하는 댓글이 없습니다"),
+    NOT_FIND_REPORT(false, HttpStatus.NOT_FOUND.value(), "일치하는 신고 카테고리가 없습니다"),
+    NOT_FIND_BOARD_REPORT(false, HttpStatus.NOT_FOUND.value(), "게시물 신고가 없습니다"),
+
+    OWN_REPORT(false, HttpStatus.BAD_REQUEST.value(), "자신의 게시물을 신고할 수 없습니다"),
+    DUPLICATE_REPORT(false, HttpStatus.BAD_REQUEST.value(), "이미 신고한 게시물 입니다"),
 
 
     /**

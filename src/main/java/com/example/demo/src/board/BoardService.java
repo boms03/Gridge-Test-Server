@@ -1,27 +1,35 @@
 package com.example.demo.src.board;
 
+import com.example.demo.common.Constant;
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
+import com.example.demo.src.mapping.boardLike.entity.BoardLike;
+import com.example.demo.src.board.model.*;
+import com.example.demo.src.comment.CommentService;
+import com.example.demo.src.comment.model.GetCommentsRes;
 import com.example.demo.src.image.ImageRepository;
 import com.example.demo.src.board.entity.Board;
-import com.example.demo.src.board.model.PostBoardReq;
-import com.example.demo.src.board.model.PostBoardRes;
+import com.example.demo.src.image.ImageService;
 import com.example.demo.src.image.entity.Image;
+import com.example.demo.src.mapping.boardLike.BoardLikeRepository;
 import com.example.demo.src.user.UserRepository;
+import com.example.demo.src.user.UserService;
 import com.example.demo.src.user.entity.User;
-import com.example.demo.src.user.model.PostUserRes;
+import com.example.demo.utils.Time;
 import com.google.cloud.storage.Bucket;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -30,27 +38,28 @@ public class BoardService {
 
     private final ImageRepository imageRepository;
     private final BoardRepository boardRepository;
+    private final BoardLikeRepository boardLikeRepository;
     private final UserRepository userRepository;
     private final Bucket bucket;
+    private final UserService userService;
+    private final ImageService imageService;
+    private final CommentService commentService;
+    private final int pageSize = 10;
 
-    public PostBoardRes createBoard(List<MultipartFile> files, PostBoardReq postBoardReq, Long userId){
+    public void createBoard(List<MultipartFile> files, PostBoardReq postBoardReq, Long userId){
 
         if(files.isEmpty()){
             throw new BaseException(BaseResponseStatus.EMPTY_FILE);
         }
 
-        User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new BaseException(BaseResponseStatus.NOT_FIND_USER));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(BaseResponseStatus.NOT_FIND_USER));
 
         Board saveBoard = boardRepository.save(postBoardReq.toEntity(user));
-
-        List<String> urlList = new ArrayList<>();
 
         files.forEach(it -> {
             String blob = user.getName() + "/" + user.getUsername() + "/" + user.getName()+ "_" + LocalDateTime.now()
                     .atZone(ZoneId.systemDefault())
                     .toInstant().toEpochMilli();
-
-            urlList.add(blob);
 
             try {
                 // 이미 존재하면 파일 삭제
@@ -72,12 +81,114 @@ public class BoardService {
             }
         });
 
-        return new PostBoardRes(saveBoard.getId());
     }
 
-    public void deletePost(Long boardId){
-        Board board = boardRepository.findById(boardId).orElseThrow(()-> new BaseException(BaseResponseStatus.EMPTY_FILE));
+    public void deletePost(Long boardId, Long userId){
+
+        Board board = boardRepository.findById(boardId).orElseThrow(()-> new BaseException(BaseResponseStatus.NOT_FIND_BOARD));
+
+        if(!Objects.equals(board.getUser().getId(), userId)){
+            throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
+        }
+
         board.deleteBoard();
+    }
+
+    public GetBoardRes getBoard(Long boardId){
+
+        Board board = boardRepository.findByIdAndState(boardId,Constant.State.ACTIVE)
+                .orElseThrow(()->new BaseException(BaseResponseStatus.NOT_FIND_BOARD));
+
+        if(board.getUser().getState() == Constant.UserState.WITHDRAW) {
+            throw new BaseException(BaseResponseStatus.WITHDRAW_USER);
+        } else if (board.getUser().getState() == Constant.UserState.BANNED){
+            throw new BaseException(BaseResponseStatus.BANNED_USER);
+        }
+
+        return buildGetBoardRes(board);
+    }
+
+    public GetBoardsRes fetchBoardPagesBy(Long lastBoardId, Long userId) {
+
+        List<User> followers = userService.findFollowings(userId);
+        Page<Board> boards = fetchPages(lastBoardId, pageSize, followers);
+        List<GetBoardRes> boardsList = boards.stream()
+                .map(this::buildGetBoardRes)
+                .collect(Collectors.toList());
+
+        if(boardsList.isEmpty()){
+            return new GetBoardsRes(boardsList);
+        }
+
+        Long newLastBoardId = boardsList.get(boardsList.size()-1).getBoardId();
+
+        return new GetBoardsRes(boardsList, newLastBoardId);
+
+    }
+
+    public Page<Board> fetchPages(Long lastBoardId, int size, List<User> followers) {
+
+        PageRequest pageRequest = PageRequest.of(0, size);
+
+        if (lastBoardId == -1) {
+            return boardRepository.findTop10ByStateAndUserInOrderByIdDesc(Constant.State.ACTIVE, followers, pageRequest);
+        } else {
+            return boardRepository.findByIdLessThanAndStateAndUserInOrderByIdDesc(lastBoardId, Constant.State.ACTIVE, followers, pageRequest);
+        }
+    }
+
+    public void likeBoard(Long userId, Long boardId){
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(()->new BaseException(BaseResponseStatus.NOT_FIND_BOARD));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new BaseException(BaseResponseStatus.NOT_FIND_USER));
+
+        boardLikeRepository.save(new BoardLike(board,user));
+    }
+
+    public void unlikeBoard(Long userId, Long boardId){
+        BoardLike boardLike = boardLikeRepository.findByBoardIdAndUserId(boardId,userId)
+                .orElseThrow(()->new BaseException(BaseResponseStatus.NOT_FIND_BOARD));
+
+        boardLikeRepository.delete(boardLike);
+    }
+
+    public Long countBoardLike(Board board){
+        return boardLikeRepository.countAllByBoard(board);
+    }
+
+    public String getPreviewContent(Board board){
+        String previewContent = board.getContent();
+
+        if(board.getContent().length() + board.getUser().getUsername().length() >=100) {
+            previewContent = board.getContent().substring(0,99-board.getUser().getUsername().length());
+        }
+
+        return previewContent;
+    }
+
+    public boolean isShortened(String content, String previewContent){
+        return !previewContent.equals(content);
+    }
+
+    public GetBoardRes buildGetBoardRes(Board board){
+
+        List <String> imageUrlList = imageService.getImageUrlList(board);
+
+        Long likes = countBoardLike(board);
+
+        String formattedTime = Time.formatPostTime(board);
+
+        String previewContent = getPreviewContent(board);
+
+        boolean isShortened = isShortened(board.getContent(),previewContent);
+
+        GetCommentsRes getCommentRes = commentService.fetchCommentPagesBy(board.getId(),-1L);
+
+        Long countComment = commentService.countCommentsOfBoard(board);
+
+        return new GetBoardRes(board, previewContent, isShortened, likes,imageUrlList, formattedTime, getCommentRes, countComment);
     }
 
 }
