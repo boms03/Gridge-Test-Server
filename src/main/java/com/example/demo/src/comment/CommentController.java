@@ -1,6 +1,8 @@
 package com.example.demo.src.comment;
 
+import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponse;
+import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.comment.model.GetCommentRes;
 import com.example.demo.src.comment.model.GetCommentsRes;
 import com.example.demo.src.comment.model.PostCommentReq;
@@ -26,6 +28,9 @@ public class CommentController {
             @RequestBody PostCommentReq postCommentReq,
             HttpServletRequest request
     ){
+        if(postCommentReq.getContent().length() > 2200 || postCommentReq.getContent().isEmpty()){
+            throw new BaseException(BaseResponseStatus.INVALID_LENGTH_COMMENT);
+        }
         Long id = jwtService.getUserId(request);
         commentService.createComment(postCommentReq,id);
         String response = "댓글 업로드 완료";
