@@ -1,17 +1,21 @@
-package com.example.demo.src.user.entity;
+package com.example.demo.src.mapping.follow.entity;
 
+import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.src.report.entity.Report;
+import com.example.demo.src.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Getter
 @Setter
 @Entity
 @Table(name = "FOLLOW")
+@Builder
 public class Follow extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
@@ -25,5 +29,4 @@ public class Follow extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="follower_id", nullable = false)
     private User follower;
-
 }
