@@ -4,6 +4,7 @@ import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.src.comment.entity.Comment;
 import com.example.demo.src.image.entity.Image;
+import com.example.demo.src.mapping.boardLike.entity.BoardLike;
 import com.example.demo.src.mapping.boardReport.entity.BoardReport;
 import com.example.demo.src.user.entity.User;
 import lombok.*;
@@ -34,6 +35,10 @@ public class Board extends BaseEntity {
     @Column(name = "state", nullable = false, length = 10)
     protected Constant.State state = Constant.State.ACTIVE;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "board_state", nullable = false, length = 10)
+    protected Constant.BoardState boardState = Constant.BoardState.VISIBLE;
+
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;
@@ -51,10 +56,9 @@ public class Board extends BaseEntity {
     private List<Comment> commentList = new ArrayList<>();
 
     @Builder
-    public Board(String content, String location, Constant.State state, User user){
+    public Board(String content, String location, User user){
         this.content = content;
         this.location = location;
-        this.state = state;
         this.user = user;
     }
 
