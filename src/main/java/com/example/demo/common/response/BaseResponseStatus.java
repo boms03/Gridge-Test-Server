@@ -58,12 +58,17 @@ public enum BaseResponseStatus {
     NOT_FIND_COMMENT(false, HttpStatus.NOT_FOUND.value(), "일치하는 댓글이 없습니다"),
     NOT_FIND_REPORT(false, HttpStatus.NOT_FOUND.value(), "일치하는 신고 카테고리가 없습니다"),
     NOT_FIND_BOARD_REPORT(false, HttpStatus.NOT_FOUND.value(), "게시물 신고가 없습니다"),
+    NOT_FIND_PREPAYMENT(false, HttpStatus.NOT_FOUND.value(), "결제 사전 검증이 없습니다"),
+    NOT_FIND_SUBSCRIPTION(false,HttpStatus.NOT_FOUND.value(),"일치하는 구독이 없습니다."),
 
     OWN_REPORT(false, HttpStatus.BAD_REQUEST.value(), "자신의 게시물을 신고할 수 없습니다"),
     DUPLICATE_REPORT(false, HttpStatus.BAD_REQUEST.value(), "이미 신고한 게시물 입니다"),
 
     INVALID_LENGTH_COMMENT(false, HttpStatus.BAD_REQUEST.value(), "댓글은 1자 이상 2200자 이하 이어야 합니다"),
     INVALID_LENGTH_BOARD(false, HttpStatus.BAD_REQUEST.value(), "게시물 본문은 1자 이상 2200자 이하 이어야 합니다"),
+
+    NOT_SUBSCRIBED(false, HttpStatus.BAD_REQUEST.value(), "구독된 계정이 아닙니다"),
+    ALREADY_SUBSCRIBED(false, HttpStatus.BAD_REQUEST.value(), "이미 구독된 계정입니다"),
 
 
     /**
@@ -80,7 +85,9 @@ public enum BaseResponseStatus {
 
     UPLOAD_FAILED(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "파일 업로드 실패하였습니다"),
 
-    UNEXPECTED_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "예상치 못한 에러가 발생했습니다.");
+    UNEXPECTED_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "예상치 못한 에러가 발생했습니다."),
+
+    IAMPORT_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "아임포트 서버 에러가 발생했습니다");
 
 
     private final boolean isSuccess;
