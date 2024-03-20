@@ -44,9 +44,8 @@ spring:
       callback-login-url: http://localhost:9000/app/users/auth/google/login/callback # 등록한 정보에 맞게 수정해주세요
       scope: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile # 등록한 정보에 맞게 수정해주세요
 
-spring.sql.init.platform: mysql
 server:
-  port: 9000
+  port: 3000
 
 springdoc:
   swagger-ui:
@@ -65,6 +64,10 @@ springdoc:
 
 jwt:
   secret-key: ${jwt-key}
+
+imp-code: ${imp-code}
+imp-api-key: ${imp-api-key}
+imp-secret-key: ${imp-secret-key}
 
 ---
 spring:
@@ -98,7 +101,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     generate-ddl: false
