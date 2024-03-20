@@ -8,6 +8,7 @@ import com.example.demo.src.mapping.boardReport.entity.BoardReport;
 import com.example.demo.src.mapping.follow.entity.Follow;
 import com.example.demo.src.mapping.userAgree.entity.UserAgree;
 import com.example.demo.src.board.entity.Board;
+import com.example.demo.src.order.entity.Purchase;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -85,6 +86,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Purchase> purchaseList = new ArrayList<>();
 
 
     @Builder
