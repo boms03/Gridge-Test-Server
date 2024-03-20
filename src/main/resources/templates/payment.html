@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>1달러샵</title>
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script>
+
+        let prepay;
+
+        $(document).ready(function () {
+
+            $.ajax({
+                url: "payment/prepare",
+                method: "post",
+                async: false,
+                contentType: "application/json",
+                success: function(data) {
+                    console.log("결제 사전 검증 등록 완료");
+                    prepay = data;
+                }
+            })
+        });
+
+        function requestPay() {
+
+            $.ajax({
+                url: "payment/info",
+                method: "get",
+                async: false,
+                contentType: "application/json",
+                success: function(data) {
+                    console.log("사용자 정보 정보 가져오기 완료");
+                },
+                error: function(data) {
+                    console.log("사용자 정보 정보 가져오기 실패");
+                }
+            }).done(function(data){
+                var IMP = window.IMP;
+                IMP.init("imp63703466");
+                IMP.request_pay({
+                    pg: "kicc", // KG이니시스 pg파라미터 값
+                    pay_method: "card", // 결제 방법
+                    merchant_uid: prepay.merchant_uid, // 주문번호
+                    customer_uid: prepay.merchant_uid,
+                    name: "당근 10kg", // 상품 명
+                    amount: prepay.amount, // 금액
+                    buyer_name: data.name,
+                    buyer_tel: data.phone,
+                }, function (rsp) {
+                    console.log(rsp);
+                    if (rsp.success) {
+                        $.ajax({
+                            url: "payment/validate",
+                            method: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                imp_uid: rsp.imp_uid,
+                                merchant_uid: rsp.merchant_uid,
+                                customer_uid: rsp.customer_uid
+                            }),
+                            success: function () {
+                                console.log("결제 사후 검증 완료");
+                            },
+                            error: function () {
+                                console.log("결제 사후 검증 실패");
+                            }
+                        }).done(function(){
+
+                            var orderInfo = {
+                                "merchant_uid": rsp.merchant_uid,
+                                "customer_uid": rsp.customer_uid,
+                                "buyer_name": rsp.buyer_name,
+                                "amount": rsp.paid_amount,
+                                "pay_method": rsp.pay_method,
+                                "phone": rsp.buyer_tel
+                            }
+
+                            $.ajax({
+                                type: "post",
+                                url: "purchase/success",
+                                contentType: "application/json",
+                                data: JSON.stringify(orderInfo),
+                                success: function () {
+                                    console.log("주문 기록 완료");
+                                },
+                                error: function () {
+                                    console.log("주문 기록 실패");
+                                }
+                            });
+
+
+                        })
+                    } else {
+
+                        var orderInfo = {
+                            "merchant_uid": rsp.merchant_uid,
+                            "customer_uid": rsp.customer_uid,
+                            "buyer_name": rsp.buyer_name,
+                            "amount": rsp.paid_amount,
+                            "pay_method": rsp.pay_method,
+                            "phone": rsp.buyer_tel
+                        }
+
+                        $.ajax({
+                            type: "post",
+                            url: "purchase/fail",
+                            contentType: "application/json",
+                            data: JSON.stringify(orderInfo),
+                            success: function () {
+                                console.log("주문 실패 기록 완료");
+                            },
+                            error: function () {
+                                console.log("주문 실패 기록 실패");
+                            }
+                        });
+                        var m = '결제 실패하였습니다.';
+                        alert(m);
+                    }
+                });
+            })
+        }
+    </script>
+</head>
+<body>
+<h1>결제 페이지</h1>
+<button onclick="requestPay()">결제하기</button>
+</body>
+</html>
