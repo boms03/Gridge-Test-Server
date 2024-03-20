@@ -27,10 +27,22 @@ public class Constant {
         INVISIBLE
     }
 
+    public enum SubscriptionState {
+        SUBSCRIBED,
+        UNSUBSCRIBED
+    }
+
+    public enum PurchaseState {
+        SUCCESS,
+        FAILED
+    }
+
     public enum UserRole {
         USER,
         ADMIN
     }
+
+
 
 
 }
