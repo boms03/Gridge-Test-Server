@@ -1,6 +1,7 @@
 package com.example.demo.utils;
 
 
+import com.example.demo.common.Constant;
 import com.example.demo.common.exceptions.BaseException;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +30,12 @@ public class JwtService {
     @param userId
     @return String
      */
-    public String createJwt(Long userId){
+    public String createJwt(Long userId, String role){
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .claim("userIdx",userId)
+                .claim("role",role)
                 .setIssuedAt(now)
                 .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
@@ -72,6 +74,27 @@ public class JwtService {
 
         // 3. userIdx 추출
         return claims.getBody().get("userIdx",Long.class);
+    }
+
+    public String getRole(HttpServletRequest request) throws BaseException{
+        //1. JWT 추출
+        String accessToken = getJwt(request);
+        if(accessToken == null || accessToken.length() == 0){
+            throw new BaseException(EMPTY_JWT);
+        }
+
+        // 2. JWT parsing
+        Jws<Claims> claims;
+        try{
+            claims = Jwts.parser()
+                    .setSigningKey(JWT_SECRET_KEY)
+                    .parseClaimsJws(accessToken);
+        } catch (Exception ignored) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        // 3. role 추출
+        return claims.getBody().get("role", String.class);
     }
 
     public boolean validateToken(HttpServletRequest request) {
