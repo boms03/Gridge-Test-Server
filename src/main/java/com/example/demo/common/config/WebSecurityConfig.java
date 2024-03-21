@@ -52,6 +52,9 @@ public class WebSecurityConfig{
                             "/favicon.ico",
                             "/oauth2/**",
                             "/app/users/**","/login/kakao/**","/auth/**").permitAll()
+                .and()
+                .authorizeRequests()
+                    .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
