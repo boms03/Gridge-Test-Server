@@ -1,6 +1,9 @@
 # SpringBoot Template
 본 템플릿은 소프트스퀘어드 서버 교육용 Spring Boot 템플릿 입니다.
 
+## ERD
+<img width="745" alt="Screenshot 2024-03-21 at 11 13 34 PM" src="https://github.com/boms03/Gridge-Test-Server/assets/5876849/5dad54e6-1261-42f5-b039-bf3e0f6978d6">
+
 ## ✨Common
 ### REST API
 REST API를 처리하는 SpringBoot 프로젝트   
