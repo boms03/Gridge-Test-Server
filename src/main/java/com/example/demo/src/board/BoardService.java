@@ -3,6 +3,7 @@ package com.example.demo.src.board;
 import com.example.demo.common.Constant;
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
+import com.example.demo.src.board.repository.BoardRepository;
 import com.example.demo.src.mapping.boardLike.entity.BoardLike;
 import com.example.demo.src.board.model.*;
 import com.example.demo.src.comment.CommentService;
@@ -13,7 +14,7 @@ import com.example.demo.src.image.ImageService;
 import com.example.demo.src.image.entity.Image;
 import com.example.demo.src.mapping.boardLike.BoardLikeRepository;
 import com.example.demo.src.mapping.follow.FollowService;
-import com.example.demo.src.user.UserRepository;
+import com.example.demo.src.user.repository.UserRepository;
 import com.example.demo.src.user.entity.User;
 import com.example.demo.utils.Time;
 import com.google.cloud.storage.Bucket;
@@ -110,7 +111,13 @@ public class BoardService {
 
     public GetBoardsRes fetchBoardPagesBy(Long lastBoardId, Long userId) {
 
+        User user = userRepository.findByIdAndState(userId, Constant.UserState.ACTIVE)
+                .orElseThrow(()-> new BaseException(BaseResponseStatus.NOT_FIND_USER));
+
         List<User> followers = followService.findFollowings(userId);
+        // 자기 자신의 글도 피드에 올라옴
+        followers.add(user);
+
         Page<Board> boards = fetchPages(lastBoardId, pageSize, followers);
         List<GetBoardRes> boardsList = boards.stream()
                 .map(board -> buildGetBoardRes(board,userId))

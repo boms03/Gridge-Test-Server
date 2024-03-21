@@ -1,5 +1,6 @@
 package com.example.demo.common.jwt;
 
+import com.example.demo.common.Constant;
 import com.example.demo.src.user.entity.User;
 import com.example.demo.utils.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -40,10 +41,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private void setAuthentication(String token, HttpServletRequest request) {
         Long userId = jwtService.getUserId(request);
+        String role = jwtService.getRole(request);
 
 
         User user = User.builder()
                 .id(userId)
+                .role(Constant.UserRole.valueOf(role))
                 .name("TEMP")
                 .build();
 

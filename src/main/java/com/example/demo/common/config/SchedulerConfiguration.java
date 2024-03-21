@@ -4,7 +4,7 @@ import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.mapping.userAgree.UserAgreeRepository;
 import com.example.demo.src.mapping.userAgree.entity.UserAgree;
-import com.example.demo.src.subscription.SubscriptionRepository;
+import com.example.demo.src.subscription.repository.SubscriptionRepository;
 import com.example.demo.src.subscription.entity.Subscription;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class SchedulerConfiguration {
                     Subscription subscription = subscriptionRepository.findFirstByUserIdOrderByCreatedAtDesc(user.getId())
                                     .orElseThrow( () -> new BaseException(BaseResponseStatus.NOT_FIND_SUBSCRIPTION));
 
-                    subscriptionRepository.save(new Subscription(user,subscription.getPurchase(), Constant.SubscriptionState.UNSUBSCRIBED));
+                    subscriptionRepository.save(new Subscription(user,subscription.getPurchase(), Constant.SubscriptionState.UNSUBSCRIBED, subscription.getEndAt()));
                 });
 
         log.info("구독 만료 업데이트");

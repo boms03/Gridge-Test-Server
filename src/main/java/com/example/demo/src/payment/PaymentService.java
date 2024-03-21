@@ -6,7 +6,7 @@ import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.payment.entity.Prepayment;
 import com.example.demo.src.payment.model.BuyerRes;
 import com.example.demo.src.payment.model.PayReq;
-import com.example.demo.src.user.UserRepository;
+import com.example.demo.src.user.repository.UserRepository;
 import com.example.demo.src.user.entity.User;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -16,7 +16,6 @@ import com.siot.IamportRestClient.request.ScheduleData;
 import com.siot.IamportRestClient.request.ScheduleEntry;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import com.siot.IamportRestClient.response.Prepare;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,9 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Slf4j

@@ -2,12 +2,13 @@ package com.example.demo.src.mapping.boardReport;
 
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
-import com.example.demo.src.board.BoardRepository;
+import com.example.demo.src.board.repository.BoardRepository;
 import com.example.demo.src.board.entity.Board;
 import com.example.demo.src.mapping.boardReport.entity.BoardReport;
+import com.example.demo.src.mapping.boardReport.repository.BoardReportRepository;
 import com.example.demo.src.report.ReportRepository;
 import com.example.demo.src.report.entity.Report;
-import com.example.demo.src.user.UserRepository;
+import com.example.demo.src.user.repository.UserRepository;
 import com.example.demo.src.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

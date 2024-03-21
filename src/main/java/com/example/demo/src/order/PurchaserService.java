@@ -5,13 +5,15 @@ import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.order.entity.Purchase;
 import com.example.demo.src.order.model.PurchaseReq;
-import com.example.demo.src.subscription.SubscriptionRepository;
+import com.example.demo.src.subscription.repository.SubscriptionRepository;
 import com.example.demo.src.subscription.entity.Subscription;
-import com.example.demo.src.user.UserRepository;
+import com.example.demo.src.user.repository.UserRepository;
 import com.example.demo.src.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 
 @Service
@@ -30,7 +32,7 @@ public class PurchaserService {
 
         Purchase purchase = orderRepository.save(new Purchase(request.getAmount(), request.getMerchantUid(), request.getCustomerUid(), request.getPayMethod(), user, Constant.PurchaseState.SUCCESS));
 
-        subscriptionRepository.save(new Subscription(user, purchase, Constant.SubscriptionState.SUBSCRIBED));
+        subscriptionRepository.save(new Subscription(user, purchase, Constant.SubscriptionState.SUBSCRIBED, LocalDateTime.now().plusMonths(1)));
     }
 
     public void saveFailOrder(PurchaseReq request) {
