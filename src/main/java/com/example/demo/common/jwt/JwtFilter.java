@@ -59,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/swagger-ui", "/api-docs", "/auth", "/login/kakao", "/auth/KAKAO/login", "/favicon.ico"};
+        String[] excludePath = {"/swagger-ui", "/api-docs", "/auth", "/login/kakao", "/auth/KAKAO/login", "/favicon.ico", "/health"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }

@@ -51,7 +51,7 @@ public class WebSecurityConfig{
                             "/swagger-ui.html",
                             "/favicon.ico",
                             "/oauth2/**",
-                            "/app/users/**","/login/kakao/**","/auth/**").permitAll()
+                            "/app/users/**","/login/kakao/**","/auth/**", "/health").permitAll()
                 .and()
                 .authorizeRequests()
                     .antMatchers("/admin/**").hasRole("ADMIN")
