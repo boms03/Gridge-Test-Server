@@ -59,7 +59,7 @@ public enum BaseResponseStatus {
     NOT_FIND_REPORT(false, HttpStatus.NOT_FOUND.value(), "일치하는 신고 카테고리가 없습니다"),
     NOT_FIND_BOARD_REPORT(false, HttpStatus.NOT_FOUND.value(), "게시물 신고가 없습니다"),
     NOT_FIND_PREPAYMENT(false, HttpStatus.NOT_FOUND.value(), "결제 사전 검증이 없습니다"),
-    NOT_FIND_SUBSCRIPTION(false,HttpStatus.NOT_FOUND.value(),"일치하는 구독이 없습니다."),
+    NOT_FIND_SUBSCRIPTION(false,HttpStatus.NOT_FOUND.value(),"일치하는 구독이 없습니다"),
 
     OWN_REPORT(false, HttpStatus.BAD_REQUEST.value(), "자신의 게시물을 신고할 수 없습니다"),
     DUPLICATE_REPORT(false, HttpStatus.BAD_REQUEST.value(), "이미 신고한 게시물 입니다"),
@@ -70,6 +70,8 @@ public enum BaseResponseStatus {
     NOT_SUBSCRIBED(false, HttpStatus.BAD_REQUEST.value(), "구독된 계정이 아닙니다"),
     ALREADY_SUBSCRIBED(false, HttpStatus.BAD_REQUEST.value(), "이미 구독된 계정입니다"),
 
+    DELETED_BOARD(false,HttpStatus.NOT_FOUND.value(),"삭제된 게시물입니다"),
+    DELETED_BOARD_REPORT(false,HttpStatus.NOT_FOUND.value(),"삭제된 게시물 신고입니다"),
 
     /**
      * 500 :  Database, Server 오류

@@ -23,6 +23,7 @@ public class KakaoUser {
                 .name(this.nickname)
                 .isOAuth(true)
                 .provider(Constant.SocialLoginType.KAKAO.toString())
+                .role(Constant.UserRole.ROLE_USER)
                 .build();
     }
 }

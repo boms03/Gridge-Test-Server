@@ -4,13 +4,13 @@ package com.example.demo.src.user;
 
 import com.example.demo.common.Constant.*;
 import com.example.demo.common.exceptions.BaseException;
-import com.example.demo.src.mapping.follow.FollowRepository;
 import com.example.demo.src.mapping.userAgree.UserAgreeRepository;
 import com.example.demo.src.mapping.userAgree.entity.UserAgree;
 import com.example.demo.src.terms.TermsRepository;
 import com.example.demo.src.terms.entity.Terms;
 import com.example.demo.src.user.entity.User;
 import com.example.demo.src.user.model.*;
+import com.example.demo.src.user.repository.UserRepository;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +64,7 @@ public class UserService {
         User saveUser = userRepository.save(user);
 
         // JWT 발급
-        String jwtToken = jwtService.createJwt(saveUser.getId());
+        String jwtToken = jwtService.createJwt(saveUser.getId(), String.valueOf(saveUser.getRole()));
         return new PostUserRes(saveUser.getId(), jwtToken);
 
     }
@@ -134,7 +134,7 @@ public class UserService {
 
         if(user.getPassword().equals(encryptPwd)){
             Long userId = user.getId();
-            String jwt = jwtService.createJwt(userId);
+            String jwt = jwtService.createJwt(userId, String.valueOf(user.getRole()));
             return new PostLoginRes(userId,jwt);
         } else{
             throw new BaseException(FAILED_TO_LOGIN);

@@ -31,7 +31,7 @@ public class PostUserReq {
                 .username(this.username)
                 .name(this.name)
                 .birth(this.birth)
-                .role(Constant.UserRole.USER)
+                .role(Constant.UserRole.ROLE_USER)
                 .lastAgreedAt(LocalDateTime.now())
                 .build();
     }
