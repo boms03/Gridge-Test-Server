@@ -1,7 +1,7 @@
 package com.example.demo.src.mapping.boardReport.entity;
 
+import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;
-import com.example.demo.src.board.BoardRepository;
 import com.example.demo.src.board.entity.Board;
 import com.example.demo.src.report.entity.Report;
 import com.example.demo.src.user.entity.User;
@@ -32,6 +32,10 @@ public class BoardReport extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state", nullable = false, length = 10)
+    protected Constant.State state = Constant.State.ACTIVE;
 
     @Builder
     public BoardReport(Report report, Board board, User user){
