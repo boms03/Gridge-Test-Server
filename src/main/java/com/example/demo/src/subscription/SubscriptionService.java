@@ -4,8 +4,7 @@ import com.example.demo.common.Constant;
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.subscription.entity.Subscription;
-import com.example.demo.src.user.UserRepository;
-import com.example.demo.src.user.entity.User;
+import com.example.demo.src.subscription.repository.SubscriptionRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.UnscheduleData;
@@ -45,7 +44,7 @@ public class SubscriptionService {
 
         }
 
-        subscriptionRepository.save(new Subscription(subscription.getUser(),subscription.getPurchase(), Constant.SubscriptionState.UNSUBSCRIBED));
+        subscriptionRepository.save(new Subscription(subscription.getUser(),subscription.getPurchase(), Constant.SubscriptionState.UNSUBSCRIBED, subscription.getEndAt()));
 
         UnscheduleData unscheduleData = new UnscheduleData(subscription.getPurchase().getCustomerUid());
 
@@ -59,7 +58,7 @@ public class SubscriptionService {
 
         }
 
-        subscriptionRepository.save(new Subscription(subscription.getUser(),subscription.getPurchase(), Constant.SubscriptionState.UNSUBSCRIBED));
+        subscriptionRepository.save(new Subscription(subscription.getUser(),subscription.getPurchase(), Constant.SubscriptionState.UNSUBSCRIBED, subscription.getEndAt()));
 
     }
 }
