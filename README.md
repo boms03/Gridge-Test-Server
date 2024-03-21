@@ -62,17 +62,26 @@ api-server-spring-boot
   > src.main.java.com.example.demo
     > common
       > config
+        | FirebaseConfig.java
+        | IamPortConfig.java 
+        | QuerydslConfig.java
         | RestTemplateConfig.java // HTTP get,post 요청을 날릴때 일정한 형식에 맞춰주는 template
+        | SchedularConfig.java // HTTP get,post 요청을 날릴때 일정한 형식에 맞춰주는 template
         | SwaggerConfig.java // Swagger 관련 설정
         | WebConfig.java // Web 관련 설정(CORS 설정 포함)
       > entity
         | BaseEntity.java // create, update, state 등 Entity에 공통적으로 정의되는 변수를 정의한 BaseEntity
+      > jwt
+        | AuthenticationAccessDeniedFilter.java // 권한 실패시 실행 필터 
+        | CustomeUserDetail.java // 인증 객체
+        | JwtFilter.java // jwt 검증 필터
       > exceptions
         | BaseException.java // Controller, Service에서 Response 용으로 공통적으로 사용 될 익셉션 클래스
         | ExceptionAdvice.java // ExceptionHandler를 활용하여 정의해놓은 예외처리를 통합 관리하는 클래스
       > oauth
         | GoogleOauth.java // Google OAuth 처리 클래스
         | OAuthService.java // OAuth 공통 처리 서비스 클래스
+        | KakaoOauth.java // Kakako OAuth 처리 클래스
         | SocialOauth.java // OAuth 공통 메소드 정의 인터페이스
       > response
         | BaseResponse.java // Controller 에서 Response 용으로 공통적으로 사용되는 구조를 위한 모델 클래스
@@ -81,18 +90,13 @@ api-server-spring-boot
         | Secret.java // jwt 암호키 보관 클래스
       | Constant // 상수 보관 클래스
     > src
-      > test
-        > entity
-          | Comment.java // Comment Entity
-          | Memo.java // Memo Entity
+      > admin
         > model
-          | GetMemoDto.java
-          | MemoDto.java
-          | PostCommentDto.java
-        | TestController.java // Memo API Controller
-        | TestService.java // Memo API Service
-        | MemoRepository.java // Memo Spring Data JPA
-        | CommentRepository.java // Comment Spring Data JPA
+          | BoardInfoRes.java 
+          | BoardReportInfoRes.java    
+          | UserInfoRes.java
+        | AdminController.java
+        | AdminService.java
       > user
         > entity
           | User.java // User Entity
@@ -104,10 +108,13 @@ api-server-spring-boot
           | PostLoginReq.java
           | PostLoginRes.java 
           | PostUserReq.java 
-          | PostUserRes.java 
+          | PostUserRes.java
+        > repository
+          | UserRepository.java
+          | UserRepositoryCustom.java
+          | UserRepositoryImpl.java
         | UserController.java
         | UserService.java
-        | UserRepository.java
     > utils
       | JwtService.java // JWT 관련 클래스
       | SHA256.java // 암호화 알고리즘 클래스
