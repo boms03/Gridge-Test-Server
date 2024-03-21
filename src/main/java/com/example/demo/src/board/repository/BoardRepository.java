@@ -1,4 +1,4 @@
-package com.example.demo.src.board;
+package com.example.demo.src.board.repository;
 
 import com.example.demo.common.Constant;
 import com.example.demo.src.board.entity.Board;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface BoardRepository extends JpaRepository<Board,Long> {
+public interface BoardRepository extends JpaRepository<Board,Long>, BoardRepositoryCustom {
     Page<Board>findByIdLessThanAndStateAndUserInOrderByIdDesc(Long id, Constant.State state, List<User> user, PageRequest pageRequest);
 
     Page<Board>findTop10ByStateAndUserInOrderByIdDesc(Constant.State state, List<User> user, PageRequest pageRequest);
