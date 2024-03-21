@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static com.example.demo.common.response.BaseResponseStatus.INVALID_OAUTH_TYPE;
+import static com.example.demo.common.response.BaseResponseStatus.SERVER_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -41,41 +42,46 @@ public class OAuthService {
     }
 
 
-    public GetSocialOAuthRes oAuthLoginOrJoin(Constant.SocialLoginType socialLoginType, String code) throws IOException {
+    public GetSocialOAuthRes oAuthLoginOrJoin(Constant.SocialLoginType socialLoginType, String code) {
 
         switch (socialLoginType) {
             case KAKAO: {
-                // 인가 코드 받기
 
-                // 엑세스 토큰 받기
-                ResponseEntity<String> accessTokenResponse = kakaoOauth.requestAccessToken(code);
+                try {
+                    // 엑세스 토큰 받기
+                    ResponseEntity<String> accessTokenResponse = kakaoOauth.requestAccessToken(code);
 
-                // 응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
-                KakaoOAuthToken oAuthToken = kakaoOauth.getAccessToken(accessTokenResponse);
+                    // 응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
+                    KakaoOAuthToken oAuthToken = kakaoOauth.getAccessToken(accessTokenResponse);
 
-                //액세스 토큰을 다시 구글로 보내 구글에 저장된 사용자 정보가 담긴 응답 객체를 받아온다.
-                ResponseEntity<String> userInfoResponse = kakaoOauth.requestUserInfo(oAuthToken);
+                    //액세스 토큰을 다시 구글로 보내 구글에 저장된 사용자 정보가 담긴 응답 객체를 받아온다.
+                    ResponseEntity<String> userInfoResponse = kakaoOauth.requestUserInfo(oAuthToken);
 
-                //다시 JSON 형식의 응답 객체를 자바 객체로 역직렬화한다.
-                KakaoUser kakaoUser = kakaoOauth.getUserInfo(userInfoResponse);
+                    //다시 JSON 형식의 응답 객체를 자바 객체로 역직렬화한다.
+                    KakaoUser kakaoUser = kakaoOauth.getUserInfo(userInfoResponse);
 
-                //우리 서버의 db와 대조하여 해당 user가 존재하는 지 확인한다.
-                if(userService.checkUserByEmail(kakaoUser.getEmail())) { // user가 DB에 있다면, 로그인 진행
-                    // 유저 정보 조회
-                    GetUserRes getUserRes = userService.getUserByEmail(kakaoUser.getEmail());
+                    //우리 서버의 db와 대조하여 해당 user가 존재하는 지 확인한다.
+                    if(userService.checkUserByEmail(kakaoUser.getEmail())) { // user가 DB에 있다면, 로그인 진행
+                        // 유저 정보 조회
+                        GetUserRes getUserRes = userService.getUserByEmail(kakaoUser.getEmail());
 
-                    //서버에 user가 존재하면 앞으로 회원 인가 처리를 위한 jwtToken을 발급한다.
-                    String jwtToken = jwtService.createJwt(getUserRes.getId(), String.valueOf(getUserRes.getRole()));
+                        //서버에 user가 존재하면 앞으로 회원 인가 처리를 위한 jwtToken을 발급한다.
+                        String jwtToken = jwtService.createJwt(getUserRes.getId(), String.valueOf(getUserRes.getRole()));
 
-                    //액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
-                    GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(jwtToken, getUserRes.getId(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
-                    return getSocialOAuthRes;
-                }else { // user가 DB에 없다면, 회원가입 진행
-                    // 유저 정보 저장
-                    PostUserRes postUserRes = userService.createOAuthUser(kakaoUser.toEntity());
-                    GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(postUserRes.getJwt(), postUserRes.getId(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
-                    return getSocialOAuthRes;
+                        //액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
+                        GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(jwtToken, getUserRes.getId(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
+                        return getSocialOAuthRes;
+                    }else { // user가 DB에 없다면, 회원가입 진행
+                        // 유저 정보 저장
+                        PostUserRes postUserRes = userService.createOAuthUser(kakaoUser.toEntity());
+                        GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(postUserRes.getJwt(), postUserRes.getId(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
+                        return getSocialOAuthRes;
+                    }
+
+                } catch (IOException e){
+                    throw new BaseException(SERVER_ERROR);
                 }
+
             }
 
             default: {

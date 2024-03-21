@@ -149,7 +149,7 @@ public class UserController {
     public BaseResponse<GetSocialOAuthRes> kakao(
             @Parameter(required = true, description = "Oauth 인가 코드")
             @RequestParam(name= "code") String code
-    ) throws IOException {
+    ) {
         GetSocialOAuthRes getSocialOAuthRes = oAuthService.oAuthLoginOrJoin(SocialLoginType.KAKAO,code);
         return new BaseResponse<>(getSocialOAuthRes);
     }
