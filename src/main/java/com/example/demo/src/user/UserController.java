@@ -2,9 +2,18 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.common.Constant.SocialLoginType;
+import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.oauth.OAuthService;
+import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.mapping.follow.FollowService;
 import com.example.demo.utils.JwtService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import com.example.demo.common.response.BaseResponse;
 import com.example.demo.src.user.model.*;
@@ -12,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -38,16 +48,18 @@ public class UserController {
      * @return BaseResponse<PostUserRes>
      */
     // Body
-    @ResponseBody
+    @Operation(summary = "POST 회원가입")
+    @ApiResponse(responseCode = "200", description = "회원가입 성공")
+    @ApiResponse(responseCode = "400", description = "유효성 검사 실패")
     @PostMapping("/auth/signup")
-    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
+    public BaseResponse<PostUserRes> createUser(@RequestBody @Valid PostUserReq postUserReq) {
         // 전화번호 정규식
         if(!isRegexPhoneNumber(postUserReq.getPhoneNumber())){
-            return new BaseResponse<>(POST_USERS_INVALID_PHONE);
+            throw new BaseException(POST_USERS_INVALID_PHONE);
         }
         // 전화번호 중복 검사
         if(userService.checkUserByPhoneNumber(postUserReq.getPhoneNumber())){
-            return new BaseResponse<>(POST_USERS_EXISTS_PHONE);
+            throw new BaseException(POST_USERS_EXISTS_PHONE);
         }
         // 전화번호 길이 검사
         if(postUserReq.getPhoneNumber().length()>20){
@@ -55,11 +67,11 @@ public class UserController {
         }
         //아이디 정규식
         if(!isRegexUserName(postUserReq.getUsername())){
-            return new BaseResponse<>(POST_USERS_INVALID_USERNAME);
+            throw new BaseException(POST_USERS_INVALID_USERNAME);
         }
         //아이디 중복 검사
         if(userService.checkUserByUserName(postUserReq.getUsername())){
-            return new BaseResponse<>(POST_USERS_EXISTS_USERNAME);
+            throw new BaseException(POST_USERS_EXISTS_USERNAME);
         }
         // 아이디 길이 검사
         if(postUserReq.getUsername().length()>20){
@@ -67,7 +79,7 @@ public class UserController {
         }
         // 비밀번호 정규식
         if(!isRegexPassword(postUserReq.getPassword())){
-            return new BaseResponse<>(POST_USERS_INVALID_PASSWORD);
+            throw new BaseException(POST_USERS_INVALID_PASSWORD);
         }
         //이름 길이 검사
         if(postUserReq.getName().length()>20){
@@ -75,7 +87,7 @@ public class UserController {
         }
         //약관 동의 검사
         if(!postUserReq.isTermsOfService() || !postUserReq.isDataBasedPolicy() || !postUserReq.isLocationBasedPolicy()){
-            return new BaseResponse<>(POST_USERS_INVALID_TERMS);
+            throw new BaseException(POST_USERS_INVALID_TERMS);
         }
 
         PostUserRes postUserRes = userService.createUser(postUserReq);
@@ -83,82 +95,15 @@ public class UserController {
     }
 
     /**
-     * 회원 조회 API
-     * [GET] /users
-     * 회원 번호 및 이메일 검색 조회 API
-     * [GET] /app/users? Email=
-     * @return BaseResponse<List<GetUserRes>>
-     */
-    //Query String
-    @ResponseBody
-    @GetMapping("") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String Email) {
-        if(Email == null){
-            List<GetUserRes> getUsersRes = userService.getUsers();
-            return new BaseResponse<>(getUsersRes);
-        }
-        // Get Users
-        List<GetUserRes> getUsersRes = userService.getUsersByEmail(Email);
-        return new BaseResponse<>(getUsersRes);
-    }
-
-    /**
-     * 회원 1명 조회 API
-     * [GET] /app/users/:userId
-     * @return BaseResponse<GetUserRes>
-     */
-    // Path-variable
-    @ResponseBody
-    @GetMapping("/{userId}") // (GET) 127.0.0.1:9000/app/users/:userId
-    public BaseResponse<GetUserRes> getUser(@PathVariable("userId") Long userId) {
-        GetUserRes getUserRes = userService.getUser(userId);
-        return new BaseResponse<>(getUserRes);
-    }
-
-
-
-    /**
-     * 유저정보변경 API
-     * [PATCH] /app/users/:userId
-     * @return BaseResponse<String>
-     */
-    @ResponseBody
-    @PatchMapping("/{userId}")
-    public BaseResponse<String> modifyUserName(@PathVariable("userId") Long userId, @RequestBody PatchUserReq patchUserReq, HttpServletRequest request){
-
-        Long jwtUserId = jwtService.getUserId(request);
-
-        userService.modifyUserName(userId, patchUserReq);
-
-        String result = "수정 완료!!";
-        return new BaseResponse<>(result);
-
-    }
-
-    /**
-     * 유저정보삭제 API
-     * [DELETE] /app/users/:userId
-     * @return BaseResponse<String>
-     */
-    @ResponseBody
-    @DeleteMapping("/{userId}")
-    public BaseResponse<String> deleteUser(@PathVariable("userId") Long userId, HttpServletRequest request){
-        Long jwtUserId = jwtService.getUserId(request);
-
-        userService.deleteUser(userId);
-
-        String result = "삭제 완료!!";
-        return new BaseResponse<>(result);
-    }
-
-    /**
      * 로그인 API
      * [POST] /app/users/logIn
      * @return BaseResponse<PostLoginRes>
      */
-    @ResponseBody
+    @Operation(summary = "POST 로그인")
+    @ApiResponse(responseCode = "200", description = "로그인 성공")
+    @ApiResponse(responseCode = "400", description = "유효성 검사 실패")
     @PostMapping("/auth/logIn")
-    public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq){
+    public BaseResponse<PostLoginRes> logIn(@RequestBody @Valid PostLoginReq postLoginReq){
         //아이디 정규식
         if(!isRegexUserName(postLoginReq.getUsername())){
             return new BaseResponse<>(POST_USERS_INVALID_USERNAME);
@@ -179,8 +124,14 @@ public class UserController {
      * [GET] /auth/:socialLoginType/login
      * @return void
      */
+    @Operation(summary = "GET 소셜 로그인 리다이렉트")
+    @ApiResponse(responseCode = "200", description = "리다이렉트 성공")
+    @ApiResponse(responseCode = "400", description = "리다이렉트 실패")
     @GetMapping("/auth/{socialLoginType}/login")
-    public void socialLoginRedirect(@PathVariable(name="socialLoginType") String SocialLoginPath) throws IOException {
+    public void socialLoginRedirect(
+            @Parameter(required = true, description = "소셜 로그인 타입")
+            @PathVariable(name="socialLoginType") String SocialLoginPath
+    ) throws IOException {
         SocialLoginType socialLoginType= SocialLoginType.valueOf(SocialLoginPath.toUpperCase());
         oAuthService.accessRequest(socialLoginType);
     }
@@ -191,16 +142,24 @@ public class UserController {
      * @param code API Server 로부터 넘어오는 code
      * @return SNS Login 요청 결과로 받은 Json 형태의 java 객체 (access_token, jwt_token, user_num 등)
      */
+    @Operation(summary = "GET 소셜 로그인")
+    @ApiResponse(responseCode = "200", description = "소셜 로그인 성공")
+    @ApiResponse(responseCode = "400", description = "소셜 로그인 실패")
     @GetMapping("/login/kakao")
     public BaseResponse<GetSocialOAuthRes> kakao(
+            @Parameter(required = true, description = "Oauth 인가 코드")
             @RequestParam(name= "code") String code
     ) throws IOException {
         GetSocialOAuthRes getSocialOAuthRes = oAuthService.oAuthLoginOrJoin(SocialLoginType.KAKAO,code);
         return new BaseResponse<>(getSocialOAuthRes);
     }
 
+    @Operation(summary = "Post 팔로우")
+    @ApiResponse(responseCode = "200", description = "팔로우 성공")
+    @ApiResponse(responseCode = "400", description = "팔로우 실패")
     @PostMapping("/follow")
     public BaseResponse<String> createFollow(
+            @Parameter(required = true, description = "팔로잉할 상대방 아이디")
             @RequestParam String followeeUsername,
             HttpServletRequest request
     ){
@@ -210,8 +169,12 @@ public class UserController {
         return new BaseResponse<>(response);
     }
 
+    @Operation(summary = "Delete 팔로우 취소")
+    @ApiResponse(responseCode = "200", description = "팔로우 취소 성공")
+    @ApiResponse(responseCode = "400", description = "팔로우 취소 실패")
     @DeleteMapping("/follow")
     public BaseResponse<String> deleteFollow(
+            @Parameter(required = true, description = "언팔로잉할 상대방 아이디")
             @RequestParam String followeeUsername,
             HttpServletRequest request
     ){

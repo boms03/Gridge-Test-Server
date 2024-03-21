@@ -7,11 +7,15 @@ import com.example.demo.src.comment.model.GetCommentRes;
 import com.example.demo.src.comment.model.GetCommentsRes;
 import com.example.demo.src.comment.model.PostCommentReq;
 import com.example.demo.utils.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -23,9 +27,12 @@ public class CommentController {
     private final CommentService commentService;
     private final JwtService jwtService;
 
+    @Operation(summary = "Post 댓글 생성")
+    @ApiResponse(responseCode = "200", description = "댓글 생성 성공")
+    @ApiResponse(responseCode = "400", description = "댓글 생성 실패")
     @PostMapping("")
     public BaseResponse<String> createComment(
-            @RequestBody PostCommentReq postCommentReq,
+            @RequestBody @Valid PostCommentReq postCommentReq,
             HttpServletRequest request
     ){
         if(postCommentReq.getContent().length() > 2200 || postCommentReq.getContent().isEmpty()){
@@ -37,17 +44,27 @@ public class CommentController {
         return new BaseResponse<>(response);
     }
 
+
+    @Operation(summary = "Get 댓글 조회")
+    @ApiResponse(responseCode = "200", description = "댓글 조회 성공")
+    @ApiResponse(responseCode = "400", description = "댓글 조회 실패")
     @GetMapping("")
     public BaseResponse<GetCommentRes> getComment(
+            @Parameter(required = true, description = "댓글 아이디")
             @RequestParam Long commentId
     ){
         GetCommentRes getCommentRes = commentService.getComment(commentId);
         return new BaseResponse<>(getCommentRes);
     }
 
+    @Operation(summary = "Get 해당 게시글에 달린 모든 댓글 조회")
+    @ApiResponse(responseCode = "200", description = "해당 게시글에 달린 모든 댓글 조회 성공")
+    @ApiResponse(responseCode = "400", description = "해당 게시글에 달린 모든 댓글 조회 실패")
     @GetMapping("/all")
     public BaseResponse<GetCommentsRes> getComments(
+            @Parameter(required = true, description = "게시글 아이디")
             @RequestParam Long boardId,
+            @Parameter(required = false, description = "마지막으로 불러온 댓글 아이디. 게시글 첫 로딩시 null.")
             @RequestParam(required = false) Long lastCommentId
 
     ){
@@ -62,8 +79,12 @@ public class CommentController {
         return new BaseResponse<>(getCommentsRes);
     }
 
-    @DeleteMapping("")
+    @Operation(summary = "Put 댓글 지우기")
+    @ApiResponse(responseCode = "200", description = "댓글 지우기 성공")
+    @ApiResponse(responseCode = "400", description = "댓글 지우기 실패")
+    @PutMapping("")
     public BaseResponse<String> deleteComment(
+            @Parameter(required = true, description = "댓글 아이디")
             @RequestParam Long commentId,
             HttpServletRequest request
     ){
