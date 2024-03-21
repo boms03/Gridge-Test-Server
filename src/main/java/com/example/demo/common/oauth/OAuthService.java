@@ -65,7 +65,7 @@ public class OAuthService {
                     GetUserRes getUserRes = userService.getUserByEmail(kakaoUser.getEmail());
 
                     //서버에 user가 존재하면 앞으로 회원 인가 처리를 위한 jwtToken을 발급한다.
-                    String jwtToken = jwtService.createJwt(getUserRes.getId());
+                    String jwtToken = jwtService.createJwt(getUserRes.getId(), String.valueOf(getUserRes.getRole()));
 
                     //액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
                     GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(jwtToken, getUserRes.getId(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
