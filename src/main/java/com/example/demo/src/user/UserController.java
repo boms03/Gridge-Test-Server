@@ -48,7 +48,7 @@ public class UserController {
      * @return BaseResponse<PostUserRes>
      */
     // Body
-    @Operation(summary = "POST 회원가입")
+    @Operation(summary = "Post 회원가입")
     @ApiResponse(responseCode = "200", description = "회원가입 성공")
     @ApiResponse(responseCode = "400", description = "유효성 검사 실패")
     @PostMapping("/auth/signup")
@@ -99,7 +99,7 @@ public class UserController {
      * [POST] /app/users/logIn
      * @return BaseResponse<PostLoginRes>
      */
-    @Operation(summary = "POST 로그인")
+    @Operation(summary = "Post 로그인")
     @ApiResponse(responseCode = "200", description = "로그인 성공")
     @ApiResponse(responseCode = "400", description = "유효성 검사 실패")
     @PostMapping("/auth/logIn")
@@ -124,7 +124,7 @@ public class UserController {
      * [GET] /auth/:socialLoginType/login
      * @return void
      */
-    @Operation(summary = "GET 소셜 로그인 리다이렉트")
+    @Operation(summary = "Get 소셜 로그인 리다이렉트")
     @ApiResponse(responseCode = "200", description = "리다이렉트 성공")
     @ApiResponse(responseCode = "400", description = "리다이렉트 실패")
     @GetMapping("/auth/{socialLoginType}/login")
@@ -142,7 +142,7 @@ public class UserController {
      * @param code API Server 로부터 넘어오는 code
      * @return SNS Login 요청 결과로 받은 Json 형태의 java 객체 (access_token, jwt_token, user_num 등)
      */
-    @Operation(summary = "GET 소셜 로그인")
+    @Operation(summary = "Get 소셜 로그인")
     @ApiResponse(responseCode = "200", description = "소셜 로그인 성공")
     @ApiResponse(responseCode = "400", description = "소셜 로그인 실패")
     @GetMapping("/login/kakao")
