@@ -19,7 +19,6 @@ import static com.example.demo.common.response.BaseResponseStatus.SERVER_ERROR;
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
-    private final GoogleOauth googleOauth;
     private final KakaoOauth kakaoOauth;
     private final HttpServletResponse response;
     private final UserService userService;
