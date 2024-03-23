@@ -22,7 +22,7 @@ import static com.example.demo.common.response.BaseResponseStatus.INVALID_JWT;
 @Slf4j
 public class JwtService {
 
-    @Value("${jwt.key}")
+    @Value("${jwt.secret-key}")
     private String JWT_SECRET_KEY;
 
     /*

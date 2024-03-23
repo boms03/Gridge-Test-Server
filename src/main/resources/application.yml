@@ -14,9 +14,9 @@ spring:
     init:
       platform: mysql
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${db_url}
+    username: ${db_username}
+    password: ${db_password}
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
     # driver-class-name: com.mysql.jdbc.Driver # mysql 5버전
   security:
@@ -24,8 +24,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${CLIENT_ID}
-            redirect-uri: ${REDIRECT_URI}
+            client-id: ${client_id}
+            redirect-uri: ${redirect_uri}
             authorization-grant-type: authorization_code
 
 
@@ -36,9 +36,16 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+  OAuth2:
+    google:
+      url: https://accounts.google.com/o/oauth2/v2/auth
+      client-id: # client-id
+      client-secret:  # client-secret
+      callback-login-url: http://localhost:9000/app/users/auth/google/login/callback # 등록한 정보에 맞게 수정해주세요
+      scope: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile # 등록한 정보에 맞게 수정해주세요
+
 server:
   port: 8080
-  address: 127.0.0.1
 
 springdoc:
   swagger-ui:
@@ -56,12 +63,11 @@ springdoc:
     - /**
 
 jwt:
-  key: ${JWT_KEY}
+  secret-key: ${jwt_key}
 
-imp:
-  code: ${IMP_CODE}
-  key: ${IMPT_API_KEY}
-  secret: ${IMP_SECRET_KEY}
+imp-code: ${imp_code}
+imp-api-key: ${imp_api_key}
+imp-secret-key: ${imp_secret_key}
 
 ---
 spring:

@@ -7,8 +7,8 @@ plugins {
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 15
+targetCompatibility = 15
 
 compileJava.options.encoding = 'UTF-8'
 
@@ -94,8 +94,4 @@ test {
 
 jar {
     enabled = false
-}
-
-springBoot {
-    mainClass =  'com.example.demo.DemoApplication'
 }

@@ -33,7 +33,7 @@ import static com.example.demo.common.response.BaseResponseStatus.PASSWORD_ENCRY
 public class KakaoOauth implements SocialOauth{
 
     @Value("${spring.security.oauth2.client.provider.kakao.authorization-uri}")
-    private String KAKAO_SNS_AUTHORIZATION_URL;
+    private String KAKAO_SNS_AUTHROIZATION_URL;
 
     @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
     private String KAKAO_SNS_TOKEN_URL;
@@ -135,7 +135,7 @@ public class KakaoOauth implements SocialOauth{
         String parameterString = params.entrySet().stream()
                 .map(x -> x.getKey() + "=" + x.getValue())
                 .collect(Collectors.joining("&"));
-        String redirectURL = KAKAO_SNS_AUTHORIZATION_URL + "?" + parameterString;
+        String redirectURL = KAKAO_SNS_AUTHROIZATION_URL + "?" + parameterString;
         log.info("redirectURL = ", redirectURL);
 
         return redirectURL;
