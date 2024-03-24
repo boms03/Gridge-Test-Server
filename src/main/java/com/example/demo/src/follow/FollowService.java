@@ -1,9 +1,9 @@
-package com.example.demo.src.mapping.follow;
+package com.example.demo.src.follow;
 
 import com.example.demo.common.Constant;
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
-import com.example.demo.src.mapping.follow.entity.Follow;
+import com.example.demo.src.follow.entity.Follow;
 import com.example.demo.src.user.repository.UserRepository;
 import com.example.demo.src.user.entity.User;
 import lombok.RequiredArgsConstructor;

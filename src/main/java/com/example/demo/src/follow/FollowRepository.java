@@ -1,6 +1,6 @@
-package com.example.demo.src.mapping.follow;
+package com.example.demo.src.follow;
 
-import com.example.demo.src.mapping.follow.entity.Follow;
+import com.example.demo.src.follow.entity.Follow;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

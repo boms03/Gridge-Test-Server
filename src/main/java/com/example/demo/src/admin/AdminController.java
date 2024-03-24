@@ -5,8 +5,6 @@ import com.example.demo.common.response.BaseResponse;
 import com.example.demo.src.admin.model.BoardInfoRes;
 import com.example.demo.src.admin.model.BoardReportInfoRes;
 import com.example.demo.src.admin.model.UserInfoRes;
-import com.example.demo.src.board.entity.Board;
-import com.example.demo.src.mapping.boardReport.entity.BoardReport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

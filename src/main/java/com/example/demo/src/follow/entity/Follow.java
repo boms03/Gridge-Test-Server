@@ -1,4 +1,4 @@
-package com.example.demo.src.mapping.follow.entity;
+package com.example.demo.src.follow.entity;
 
 import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;

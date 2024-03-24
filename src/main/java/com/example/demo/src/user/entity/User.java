@@ -2,11 +2,11 @@ package com.example.demo.src.user.entity;
 
 import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;
-import com.example.demo.src.mapping.boardLike.entity.BoardLike;
+import com.example.demo.src.boardLike.entity.BoardLike;
 import com.example.demo.src.comment.entity.Comment;
-import com.example.demo.src.mapping.boardReport.entity.BoardReport;
-import com.example.demo.src.mapping.follow.entity.Follow;
-import com.example.demo.src.mapping.userAgree.entity.UserAgree;
+import com.example.demo.src.boardReport.entity.BoardReport;
+import com.example.demo.src.follow.entity.Follow;
+import com.example.demo.src.userAgree.entity.UserAgree;
 import com.example.demo.src.board.entity.Board;
 import com.example.demo.src.order.entity.Purchase;
 import lombok.*;

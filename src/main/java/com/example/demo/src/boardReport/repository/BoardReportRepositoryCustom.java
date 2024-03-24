@@ -1,6 +1,6 @@
-package com.example.demo.src.mapping.boardReport.repository;
+package com.example.demo.src.boardReport.repository;
 
-import com.example.demo.src.mapping.boardReport.entity.BoardReport;
+import com.example.demo.src.boardReport.entity.BoardReport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

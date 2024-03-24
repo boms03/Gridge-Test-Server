@@ -1,6 +1,6 @@
 package com.example.demo.src.terms.entity;
 
-import com.example.demo.src.mapping.userAgree.entity.UserAgree;
+import com.example.demo.src.userAgree.entity.UserAgree;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
