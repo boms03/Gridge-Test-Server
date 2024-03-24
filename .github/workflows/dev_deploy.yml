@@ -21,13 +21,12 @@ jobs:
           distribution: 'adopt'
 
       - name: Set Firebase
-        run: |
-          id: create-json
-          uses: jsdaniell/create-json@1.1.2
-          with: 
-            name: "secrets.json"
-            json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-            dir: 'src/main/resources/'
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "secrets.json"
+          json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          dir: 'src/main/resources/'
 
       - name: Check
         run: find src
