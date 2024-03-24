@@ -1,11 +1,8 @@
-package com.example.demo.src.mapping.boardReport.repository;
+package com.example.demo.src.boardReport.repository;
 
 import com.example.demo.common.Constant;
-import com.example.demo.src.mapping.boardReport.entity.BoardReport;
-import com.example.demo.src.mapping.boardReport.entity.QBoardReport;
-import com.example.demo.src.subscription.SubscriptionService;
-import com.example.demo.src.subscription.entity.QSubscription;
-import com.example.demo.src.subscription.entity.Subscription;
+import com.example.demo.src.boardReport.entity.BoardReport;
+import com.example.demo.src.boardReport.entity.QBoardReport;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

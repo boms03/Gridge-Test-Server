@@ -1,9 +1,6 @@
 package com.example.demo.src.user.repository;
 
 import com.example.demo.common.Constant;
-import com.example.demo.src.board.entity.Board;
-import com.example.demo.src.mapping.boardReport.entity.BoardReport;
-import com.example.demo.src.subscription.entity.Subscription;
 import com.example.demo.src.user.entity.QUser;
 import com.example.demo.src.user.entity.User;
 import com.querydsl.core.types.dsl.BooleanExpression;

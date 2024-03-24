@@ -4,8 +4,8 @@ import com.example.demo.common.Constant;
 import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.src.comment.entity.Comment;
 import com.example.demo.src.image.entity.Image;
-import com.example.demo.src.mapping.boardLike.entity.BoardLike;
-import com.example.demo.src.mapping.boardReport.entity.BoardReport;
+import com.example.demo.src.boardLike.entity.BoardLike;
+import com.example.demo.src.boardReport.entity.BoardReport;
 import com.example.demo.src.user.entity.User;
 import lombok.*;
 

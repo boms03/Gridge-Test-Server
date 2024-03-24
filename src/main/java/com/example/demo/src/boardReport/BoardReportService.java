@@ -1,11 +1,11 @@
-package com.example.demo.src.mapping.boardReport;
+package com.example.demo.src.boardReport;
 
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.board.repository.BoardRepository;
 import com.example.demo.src.board.entity.Board;
-import com.example.demo.src.mapping.boardReport.entity.BoardReport;
-import com.example.demo.src.mapping.boardReport.repository.BoardReportRepository;
+import com.example.demo.src.boardReport.entity.BoardReport;
+import com.example.demo.src.boardReport.repository.BoardReportRepository;
 import com.example.demo.src.report.ReportRepository;
 import com.example.demo.src.report.entity.Report;
 import com.example.demo.src.user.repository.UserRepository;

@@ -1,4 +1,4 @@
-package com.example.demo.src.mapping.userAgree.entity;
+package com.example.demo.src.userAgree.entity;
 
 
 import com.example.demo.common.entity.BaseEntity;

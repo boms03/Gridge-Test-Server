@@ -4,7 +4,7 @@ import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponse;
 import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.board.model.*;
-import com.example.demo.src.mapping.boardReport.BoardReportService;
+import com.example.demo.src.boardReport.BoardReportService;
 import com.example.demo.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

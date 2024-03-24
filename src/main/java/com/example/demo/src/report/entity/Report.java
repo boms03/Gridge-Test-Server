@@ -1,6 +1,6 @@
 package com.example.demo.src.report.entity;
 
-import com.example.demo.src.mapping.boardReport.entity.BoardReport;
+import com.example.demo.src.boardReport.entity.BoardReport;
 import lombok.*;
 
 import javax.persistence.*;

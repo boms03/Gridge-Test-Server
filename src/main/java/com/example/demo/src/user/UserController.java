@@ -4,26 +4,22 @@ package com.example.demo.src.user;
 import com.example.demo.common.Constant.SocialLoginType;
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.oauth.OAuthService;
-import com.example.demo.common.response.BaseResponseStatus;
-import com.example.demo.src.mapping.follow.FollowService;
+import com.example.demo.common.response.BaseErrorResponse;
+import com.example.demo.src.follow.FollowService;
 import com.example.demo.utils.JwtService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import com.example.demo.common.response.BaseResponse;
 import com.example.demo.src.user.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 
 import static com.example.demo.common.response.BaseResponseStatus.*;
@@ -44,13 +40,15 @@ public class UserController {
 
     /**
      * 회원가입 API
-     * [POST] /app/users
+     * [POST] /auth/signup
+     * @param postUserReq 회원가입에 필요한 유저 정보 DTO
      * @return BaseResponse<PostUserRes>
      */
     // Body
     @Operation(summary = "Post 회원가입")
     @ApiResponse(responseCode = "200", description = "회원가입 성공")
-    @ApiResponse(responseCode = "400", description = "유효성 검사 실패")
+    @ApiResponse(responseCode = "400", description = "유효성 검사 실패", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))})
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PostMapping("/auth/signup")
     public BaseResponse<PostUserRes> createUser(@RequestBody @Valid PostUserReq postUserReq) {
         // 전화번호 정규식
@@ -96,12 +94,14 @@ public class UserController {
 
     /**
      * 로그인 API
-     * [POST] /app/users/logIn
+     * [POST] /auth/logIn
+     * @param postLoginReq 로그인에 필요한 유저 정보 DTO
      * @return BaseResponse<PostLoginRes>
      */
-    @Operation(summary = "Post 로그인")
+    @Operation(summary = "Post 일반 로그인")
     @ApiResponse(responseCode = "200", description = "로그인 성공")
-    @ApiResponse(responseCode = "400", description = "유효성 검사 실패")
+    @ApiResponse(responseCode = "400", description = "유효성 검사 실패", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))})
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PostMapping("/auth/logIn")
     public BaseResponse<PostLoginRes> logIn(@RequestBody @Valid PostLoginReq postLoginReq){
         //아이디 정규식
@@ -122,11 +122,13 @@ public class UserController {
     /**
      * 유저 소셜 가입, 로그인 인증으로 리다이렉트 해주는 url
      * [GET] /auth/:socialLoginType/login
+     * @param SocialLoginPath 소셜 로그인 타입
      * @return void
      */
     @Operation(summary = "Get 소셜 로그인 리다이렉트")
     @ApiResponse(responseCode = "200", description = "리다이렉트 성공")
-    @ApiResponse(responseCode = "400", description = "리다이렉트 실패")
+    @ApiResponse(responseCode = "400", description = "리다이렉트 실패", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))})
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/auth/{socialLoginType}/login")
     public void socialLoginRedirect(
             @Parameter(required = true, description = "소셜 로그인 타입")
@@ -139,12 +141,14 @@ public class UserController {
 
     /**
      * Social Login API Server 요청에 의한 callback 을 처리
+     * [GET] /login/kakao
      * @param code API Server 로부터 넘어오는 code
      * @return SNS Login 요청 결과로 받은 Json 형태의 java 객체 (access_token, jwt_token, user_num 등)
      */
-    @Operation(summary = "Get 소셜 로그인")
+    @Operation(summary = "Get 소셜 로그인 callback 처리")
     @ApiResponse(responseCode = "200", description = "소셜 로그인 성공")
-    @ApiResponse(responseCode = "400", description = "소셜 로그인 실패")
+    @ApiResponse(responseCode = "400", description = "소셜 로그인 실패", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/login/kakao")
     public BaseResponse<GetSocialOAuthRes> kakao(
             @Parameter(required = true, description = "Oauth 인가 코드")
@@ -154,33 +158,4 @@ public class UserController {
         return new BaseResponse<>(getSocialOAuthRes);
     }
 
-    @Operation(summary = "Post 팔로우")
-    @ApiResponse(responseCode = "200", description = "팔로우 성공")
-    @ApiResponse(responseCode = "400", description = "팔로우 실패")
-    @PostMapping("/follow")
-    public BaseResponse<String> createFollow(
-            @Parameter(required = true, description = "팔로잉할 상대방 아이디")
-            @RequestParam String followeeUsername,
-            HttpServletRequest request
-    ){
-        Long id = jwtService.getUserId(request);
-        followService.createFollow(followeeUsername,id);
-        String response = "팔로우 완료";
-        return new BaseResponse<>(response);
-    }
-
-    @Operation(summary = "Delete 팔로우 취소")
-    @ApiResponse(responseCode = "200", description = "팔로우 취소 성공")
-    @ApiResponse(responseCode = "400", description = "팔로우 취소 실패")
-    @DeleteMapping("/follow")
-    public BaseResponse<String> deleteFollow(
-            @Parameter(required = true, description = "언팔로잉할 상대방 아이디")
-            @RequestParam String followeeUsername,
-            HttpServletRequest request
-    ){
-        Long id = jwtService.getUserId(request);
-        followService.deleteFollow(followeeUsername,id);
-        String response = "팔로우 취소 완료";
-        return new BaseResponse<>(response);
-    }
 }

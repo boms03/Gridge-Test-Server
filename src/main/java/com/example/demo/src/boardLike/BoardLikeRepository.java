@@ -1,7 +1,7 @@
-package com.example.demo.src.mapping.boardLike;
+package com.example.demo.src.boardLike;
 
 import com.example.demo.src.board.entity.Board;
-import com.example.demo.src.mapping.boardLike.entity.BoardLike;
+import com.example.demo.src.boardLike.entity.BoardLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

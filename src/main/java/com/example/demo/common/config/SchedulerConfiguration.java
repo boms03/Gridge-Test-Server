@@ -2,8 +2,8 @@ package com.example.demo.common.config;
 
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponseStatus;
-import com.example.demo.src.mapping.userAgree.UserAgreeRepository;
-import com.example.demo.src.mapping.userAgree.entity.UserAgree;
+import com.example.demo.src.userAgree.UserAgreeRepository;
+import com.example.demo.src.userAgree.entity.UserAgree;
 import com.example.demo.src.subscription.repository.SubscriptionRepository;
 import com.example.demo.src.subscription.entity.Subscription;
 import lombok.RequiredArgsConstructor;
