@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
-public class SubscriptionRepositoryImpl extends QuerydslRepositorySupport {
+public class SubscriptionRepositoryImpl extends QuerydslRepositorySupport implements SubscriptionRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     private final QSubscription subscription = QSubscription.subscription;
 
