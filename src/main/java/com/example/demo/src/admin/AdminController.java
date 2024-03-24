@@ -42,22 +42,22 @@ public class AdminController {
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/users")
     public Page<UserInfoRes> getUsers(
-            @Parameter(name = "유저 아이디")
+            @Parameter(description = "유저 아이디")
             @RequestParam(required = false) String username,
 
-            @Parameter(name = "유저 이름")
+            @Parameter(description = "유저 이름")
             @RequestParam(required = false) String name,
 
-            @Parameter(name = "유저 생성 시간")
+            @Parameter(description = "유저 생성 시간")
             @RequestParam(required = false) String createdAt,
 
-            @Parameter(name = "유저 상태")
+            @Parameter(description = "유저 상태")
             @RequestParam(required = false) Constant.UserState state,
 
-            @Parameter(name = "페이지")
+            @Parameter(description = "페이지")
             @RequestParam(name = "page", defaultValue = "0") int page,
 
-            @Parameter(name = "한 페이지에 불러올 크기")
+            @Parameter(description = "한 페이지에 불러올 크기")
             @RequestParam(name = "size", defaultValue = "10") int size
 
     ){
@@ -78,7 +78,7 @@ public class AdminController {
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PutMapping("/users/{userId}")
     public BaseResponse<String> banUser(
-            @Parameter(required = true, name = "정지할 유저 아이디")
+            @Parameter(required = true, description = "정지할 유저 아이디")
             @PathVariable Long userId
     ){
         adminService.banUser(userId);
@@ -102,19 +102,19 @@ public class AdminController {
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/boards")
     public BaseResponse<Page<BoardInfoRes>> getBoards(
-            @Parameter(name = "유저 아이디")
+            @Parameter(description = "유저 아이디")
             @RequestParam(required = false) String username,
 
-            @Parameter(name = "게시글 생성 시간")
+            @Parameter(description = "게시글 생성 시간")
             @RequestParam(required = false) String createdAt,
 
-            @Parameter(name = "게시글 상태")
+            @Parameter(description = "게시글 상태")
             @RequestParam(required = false) Constant.BoardState state,
 
-            @Parameter(name = "페이지")
+            @Parameter(description = "페이지")
             @RequestParam(name = "page", defaultValue = "0") int page,
 
-            @Parameter(name = "한 페이지에 불러올 크기")
+            @Parameter(description = "한 페이지에 불러올 크기")
             @RequestParam(name = "size", defaultValue = "10") int size
     ){
         Pageable pageable = PageRequest.of(page,size);
@@ -133,7 +133,7 @@ public class AdminController {
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PutMapping("/boards/{boardId}")
     public BaseResponse<String> deleteBoard(
-            @Parameter(required = true, name = "게시글 아이디")
+            @Parameter(required = true, description = "게시글 아이디")
             @PathVariable Long boardId
     ){
         adminService.deleteBoard(boardId);
@@ -159,25 +159,25 @@ public class AdminController {
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/subscriptions")
     public BaseResponse<Page<UserInfoRes>> getSubscriptions(
-            @Parameter(name = "유저 아이디")
+            @Parameter(description = "유저 아이디")
             @RequestParam(required = false) String username,
 
-            @Parameter(name = "유저 이름")
+            @Parameter(description = "유저 이름")
             @RequestParam(required = false) String name,
 
-            @Parameter(name = "구독 생성 시간")
+            @Parameter(description = "구독 생성 시간")
             @RequestParam(required = false) String createdAt,
 
-            @Parameter(name = "구독 종료 시간")
+            @Parameter(description = "구독 종료 시간")
             @RequestParam(required = false) String endAt,
 
-            @Parameter(name = "구독 상태")
+            @Parameter(description = "구독 상태")
             @RequestParam(required = false) Constant.SubscriptionState state,
 
-            @Parameter(name = "페이지")
+            @Parameter(description = "페이지")
             @RequestParam(name = "page", defaultValue = "0") int page,
 
-            @Parameter(name = "한 페이지에 불러올 크기")
+            @Parameter(description = "한 페이지에 불러올 크기")
             @RequestParam(name = "size", defaultValue = "10") int size
     ){
         Pageable pageable = PageRequest.of(page,size);
@@ -197,10 +197,10 @@ public class AdminController {
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/boardReports")
     public BaseResponse<Page<BoardReportInfoRes>> getBoardReports(
-            @Parameter(name = "페이지")
+            @Parameter(description = "페이지")
             @RequestParam(name = "page", defaultValue = "0") int page,
 
-            @Parameter(name = "한 페이지에 불러올 크기")
+            @Parameter(description = "한 페이지에 불러올 크기")
             @RequestParam(name = "size", defaultValue = "10") int size
     ){
         Pageable pageable = PageRequest.of(page,size);
@@ -219,7 +219,7 @@ public class AdminController {
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PutMapping("/boardReports/{boardReportId}")
     public BaseResponse<String> deleteBoardReport(
-            @Parameter(required = true, name = "게시물 신고 아이디")
+            @Parameter(required = true, description = "게시물 신고 아이디")
             @PathVariable Long boardReportId
     ){
         adminService.deleteBoardReport(boardReportId);
