@@ -16,7 +16,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import java.util.List;
 
-public class BoardRepositoryImpl extends QuerydslRepositorySupport {
+public class BoardRepositoryImpl extends QuerydslRepositorySupport implements BoardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
     private final QBoard board = QBoard.board;
@@ -26,9 +26,17 @@ public class BoardRepositoryImpl extends QuerydslRepositorySupport {
         this.queryFactory = queryFactory;
     }
     public Page<Board> findBoardsBySearchOption(Pageable pageable, String username, String createdAt, Constant.BoardState state) {
-        JPQLQuery<Board> query =  queryFactory.selectFrom(board)
-                .where(eqUsername(username), eqCreatedAt(createdAt), eqBoardState(state))
-                .orderBy(board.user.createdAt.desc());
+
+        JPQLQuery<Board> query;
+
+        if((username == null) || (username.isEmpty()) && (createdAt == null) || (createdAt.isEmpty()) && (state == null)){
+            query = queryFactory.selectFrom(board)
+                    .orderBy(board.createdAt.desc());
+        } else {
+            query =  queryFactory.selectFrom(board)
+                    .where(eqUsername(username), eqCreatedAt(createdAt), eqBoardState(state))
+                    .orderBy(board.user.createdAt.desc());
+        }
 
         long totalCount = query.fetchCount();
         List<Board> boards = getQuerydsl().applyPagination(pageable, query).fetch();
