@@ -121,7 +121,7 @@ public class BoardController {
     @ApiResponse(responseCode = "200", description = "모든 게시글 조회 성공")
     @ApiResponse(responseCode = "400", description = "모든 게시글 조회 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
-    @GetMapping("/all")
+    @GetMapping("")
     public BaseResponse<GetBoardsRes> getBoards(
             @Parameter(name = "마지막으로 조회한 게시글 아이디")
             @RequestParam(required = false) Long lastBoardId,
