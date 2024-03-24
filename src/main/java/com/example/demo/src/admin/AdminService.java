@@ -71,10 +71,12 @@ public class AdminService {
         Page<BoardInfoRes> boardInfoRes =  boardPage.map(board ->
                 BoardInfoRes.builder()
                         .id(board.getId())
+                        .username(board.getUser().getUsername())
                         .content(board.getContent())
                         .location(board.getLocation())
                         .state(board.getState().toString())
                         .boardState(board.getBoardState().toString())
+                        .createdAt(board.getCreatedAt())
                         .build()
         );
 

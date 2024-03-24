@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,8 @@ public class AdminController {
      * @param name : 유저 이름, nullable
      * @param createdAt : 유저 생성 시간, nullable
      * @param state : 유저 상태, nullable
-     * @param pageable : 페이지 사이즈 정렬 기준
+     * @param page : 페이지, nullable
+     * @param size : 한 페이지에 불러올 크기, nullable
      * @return BaseResponse<Page<UserInfoRes>>
      */
     @Operation(summary = "Get 모든 유저 조회")
@@ -39,7 +41,7 @@ public class AdminController {
     @ApiResponse(responseCode = "400", description = "모든 유저 조회 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/users")
-    public BaseResponse<Page<UserInfoRes>> getUsers(
+    public Page<UserInfoRes> getUsers(
             @Parameter(name = "유저 아이디")
             @RequestParam(required = false) String username,
 
@@ -52,11 +54,16 @@ public class AdminController {
             @Parameter(name = "유저 상태")
             @RequestParam(required = false) Constant.UserState state,
 
-            @Parameter(required = true, description = "페이지, 사이즈, 정렬 기준")
-            @PageableDefault(sort = "createdAt")
-            Pageable pageable
+            @Parameter(name = "페이지")
+            @RequestParam(name = "page", defaultValue = "0") int page,
+
+            @Parameter(name = "한 페이지에 불러올 크기")
+            @RequestParam(name = "size", defaultValue = "10") int size
+
     ){
-        return new BaseResponse<>(adminService.getUsers(pageable,username,name,createdAt,state));
+        Pageable pageable = PageRequest.of(page,size);
+        Page<UserInfoRes> userInfoResPage = adminService.getUsers(pageable,username,name,createdAt,state);
+        return userInfoResPage;
     }
 
     /**
@@ -85,7 +92,8 @@ public class AdminController {
      * @param username : 작성자 아이디, nullable
      * @param createdAt : 게시물 생성 시간, nullable
      * @param state : 게시물 상태, nullable
-     * @param pageable : 페이지 사이즈 정렬 기준, nullable
+     * @param page : 페이지, nullable
+     * @param size : 한 페이지에 불러올 크기, nullable
      * @return BaseResponse<Page<UserInfoRes>>
      */
     @Operation(summary = "Get 모든 게시물 조회")
@@ -103,10 +111,13 @@ public class AdminController {
             @Parameter(name = "게시글 상태")
             @RequestParam(required = false) Constant.BoardState state,
 
-            @Parameter(required = true, description = "페이지, 사이즈, 정렬 기준")
-            @PageableDefault(sort = "createdAt")
-            Pageable pageable
+            @Parameter(name = "페이지")
+            @RequestParam(name = "page", defaultValue = "0") int page,
+
+            @Parameter(name = "한 페이지에 불러올 크기")
+            @RequestParam(name = "size", defaultValue = "10") int size
     ){
+        Pageable pageable = PageRequest.of(page,size);
         return new BaseResponse<>(adminService.getBoards(pageable,username,createdAt,state));
     }
 
@@ -138,7 +149,8 @@ public class AdminController {
      * @param name : 구독자 이름, nullable
      * @param createdAt : 구독 생성 시간, nullable
      * @param state : 구독 상태, nullable
-     * @param pageable : 페이지 사이즈 정렬 기준
+     * @param page : 페이지 , nullable
+     * @param size : 한 페이지에 불러올 크기, nullable
      * @return BaseResponse<Page<UserInfoRes>>
      */
     @Operation(summary = "Get 모든 구독 조회")
@@ -162,17 +174,21 @@ public class AdminController {
             @Parameter(name = "구독 상태")
             @RequestParam(required = false) Constant.SubscriptionState state,
 
-            @Parameter(required = true, description = "페이지, 사이즈, 정렬 기준")
-            @PageableDefault(sort = "createdAt")
-            Pageable pageable
+            @Parameter(name = "페이지")
+            @RequestParam(name = "page", defaultValue = "0") int page,
+
+            @Parameter(name = "한 페이지에 불러올 크기")
+            @RequestParam(name = "size", defaultValue = "10") int size
     ){
+        Pageable pageable = PageRequest.of(page,size);
         return new BaseResponse<>(adminService.getSubscriptions(pageable,username,name,createdAt,endAt,state));
     }
 
     /**
      * 어드민 모든 게시글 신고 조회 API
      * [GET] /admin/boardReports
-     * @param pageable : 페이지 사이즈 정렬 기준
+     * @param page : 페이지 , nullable
+     * @param size : 한 페이지에 불러올 크기, nullable
      * @return BaseResponse<Page<UserInfoRes>>
      */
     @Operation(summary = "Get 모든 게시물 신고 조회")
@@ -181,10 +197,13 @@ public class AdminController {
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/boardReports")
     public BaseResponse<Page<BoardReportInfoRes>> getBoardReports(
-            @Parameter(required = true, description = "페이지, 사이즈, 정렬 기준")
-            @PageableDefault(sort = "createdAt")
-            Pageable pageable
+            @Parameter(name = "페이지")
+            @RequestParam(name = "page", defaultValue = "0") int page,
+
+            @Parameter(name = "한 페이지에 불러올 크기")
+            @RequestParam(name = "size", defaultValue = "10") int size
     ){
+        Pageable pageable = PageRequest.of(page,size);
         return new BaseResponse<>(adminService.getBoardReports(pageable));
     }
 
