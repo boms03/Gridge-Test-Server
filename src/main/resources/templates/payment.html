@@ -42,8 +42,8 @@
                 IMP.request_pay({
                     pg: "kicc", // KG이니시스 pg파라미터 값
                     pay_method: "card", // 결제 방법
-                    merchant_uid: prepay.merchant_uid, // 주문번호
-                    customer_uid: prepay.merchant_uid,
+                    merchant_uid: prepay.result.merchant_uid, // 주문번호
+                    customer_uid: prepay.result.merchant_uid, // 주문번호를 빌링키로 사용
                     name: "당근 10kg", // 상품 명
                     amount: prepay.amount, // 금액
                     buyer_name: data.name,
