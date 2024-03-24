@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -28,16 +27,18 @@ public class PurchaserService {
     public void saveOrder(PurchaseReq request) {
 
         User user = userRepository.findByPhoneNumber(request.getPhone())
-                        .orElseThrow(()-> new BaseException(BaseResponseStatus.NOT_FIND_USER));
+                .orElseThrow(()-> new BaseException(BaseResponseStatus.NOT_FIND_USER));
 
-        Purchase purchase = orderRepository.save(new Purchase(request.getAmount(), request.getMerchantUid(), request.getCustomerUid(), request.getPayMethod(), user, Constant.PurchaseState.SUCCESS));
+        if(request.isSuccess()){
 
-        subscriptionRepository.save(new Subscription(user, purchase, Constant.SubscriptionState.SUBSCRIBED, LocalDateTime.now().plusMonths(1)));
-    }
+            Purchase purchase = orderRepository.save(new Purchase(request.getAmount(), request.getMerchantUid(), request.getCustomerUid(), request.getPayMethod(), user, Constant.PurchaseState.SUCCESS));
 
-    public void saveFailOrder(PurchaseReq request) {
+            subscriptionRepository.save(new Subscription(user, purchase, Constant.SubscriptionState.SUBSCRIBED, LocalDateTime.now().plusMonths(1)));
+        } else {
 
-        orderRepository.save(new Purchase(request.getMerchantUid(), Constant.PurchaseState.FAILED));
+            orderRepository.save(new Purchase(request.getMerchantUid(), Constant.PurchaseState.FAILED));
+
+        }
 
     }
 
