@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import retrofit2.http.Path;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/boards")
 public class BoardController {
 
     private final BoardService boardService;
@@ -74,10 +76,10 @@ public class BoardController {
     @ApiResponse(responseCode = "200", description = "게시글 조회 성공")
     @ApiResponse(responseCode = "400", description = "게시글 조회 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
-    @GetMapping("")
+    @GetMapping("/{boardId}")
     public BaseResponse<GetBoardRes> getBoard(
             @Parameter(required = true, name = "게시글 아이디")
-            @RequestParam Long boardId,
+            @PathVariable Long boardId,
             HttpServletRequest request
     ){
         Long id = jwtService.getUserId(request);
@@ -97,10 +99,10 @@ public class BoardController {
     @ApiResponse(responseCode = "200", description = "게시글 삭제 성공")
     @ApiResponse(responseCode = "400", description = "게시글 삭제 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
-    @PutMapping("")
+    @PutMapping("{boardId}")
     public BaseResponse<String> deleteBoard(
             @Parameter(required = true, name = "게시글 아이디")
-            @RequestParam Long boardId,
+            @PathVariable Long boardId,
             HttpServletRequest request
     ){
         Long id = jwtService.getUserId(request);
