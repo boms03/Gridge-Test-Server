@@ -1,5 +1,7 @@
 package com.example.demo.common.config;
 
+import com.example.demo.common.exceptions.BaseException;
+import com.example.demo.common.response.BaseResponseStatus;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.FirebaseApp;
@@ -12,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
 @Configuration
 @Slf4j
@@ -20,8 +24,11 @@ public class FirebaseConfig {
     public FirebaseApp firebaseApp() throws IOException {
         log.info("Initializing Firebase.");
 
-        FileInputStream serviceAccount =
-                new FileInputStream("src/main/resources/serviceAccountKey.json");
+        InputStream serviceAccount = getClass().getResourceAsStream("/serviceAccountKey.json");
+
+        if (Objects.isNull(serviceAccount)) {
+            throw new BaseException(BaseResponseStatus.SERVER_ERROR);
+        }
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
