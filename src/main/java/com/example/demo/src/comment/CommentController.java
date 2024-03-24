@@ -114,10 +114,10 @@ public class CommentController {
     @ApiResponse(responseCode = "200", description = "댓글 지우기 성공")
     @ApiResponse(responseCode = "400", description = "댓글 지우기 실패", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
-    @PutMapping("")
+    @PutMapping("/{commentId}")
     public BaseResponse<String> deleteComment(
             @Parameter(required = true, description = "댓글 아이디")
-            @RequestParam Long commentId,
+            @PathVariable Long commentId,
             HttpServletRequest request
     ){
         Long id = jwtService.getUserId(request);
