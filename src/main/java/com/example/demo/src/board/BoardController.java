@@ -1,6 +1,7 @@
 package com.example.demo.src.board;
 
 import com.example.demo.common.exceptions.BaseException;
+import com.example.demo.common.response.BaseErrorResponse;
 import com.example.demo.common.response.BaseResponse;
 import com.example.demo.common.response.BaseResponseStatus;
 import com.example.demo.src.board.model.*;
@@ -8,6 +9,8 @@ import com.example.demo.src.boardReport.BoardReportService;
 import com.example.demo.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +30,23 @@ public class BoardController {
     private final BoardReportService boardReportService;
     private final JwtService jwtService;
 
+    /**
+     * 게시글 생성 API
+     * [POST] /board
+     * @param files 이미지 및 동영상 파일이 담긴 리스트
+     * @param postBoardReq 게시글 작성 내용 dto
+     * @return BaseResponse<String>
+     */
     @Operation(summary = "Post 게시글 생성")
     @ApiResponse(responseCode = "200", description = "게시글 생성 성공")
-    @ApiResponse(responseCode = "400", description = "게시글 생성 실패")
+    @ApiResponse(responseCode = "400", description = "게시글 생성 실패", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PostMapping("")
     public BaseResponse<String> createBoard(
-            @Parameter(required = true, name = "이미지 및 영상 파일")
+            @Parameter(required = true, name = "이미지 및 영상 파일", description = "form/data 사용")
             @RequestPart(value="files") List<MultipartFile> files,
 
+            @Parameter(required = true, name = "게시글 작성 내용", description = "form/data 사용. application/json 타입 명시 필요")
             @RequestPart(value = "requestDto") @Valid PostBoardReq postBoardReq,
             HttpServletRequest request
     ){
@@ -51,9 +63,17 @@ public class BoardController {
         return new BaseResponse<>(response);
     }
 
+
+    /**
+     * 게시글 한개 조회 API
+     * [GET] /board
+     * @param boardId 조회할 게시글 아이디
+     * @return BaseResponse<GetBoardRes>
+     */
     @Operation(summary = "Get 게시글 조회")
     @ApiResponse(responseCode = "200", description = "게시글 조회 성공")
-    @ApiResponse(responseCode = "400", description = "게시글 조회 실패")
+    @ApiResponse(responseCode = "400", description = "게시글 조회 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("")
     public BaseResponse<GetBoardRes> getBoard(
             @Parameter(required = true, name = "게시글 아이디")
@@ -66,9 +86,17 @@ public class BoardController {
         return new BaseResponse<>(getBoardRes);
     }
 
+
+    /**
+     * 게시글 삭제 API
+     * [PUT] /board
+     * @param boardId 삭제할 게시글 아이디
+     * @return BaseResponse<String>
+     */
     @Operation(summary = "Put 게시글 삭제")
     @ApiResponse(responseCode = "200", description = "게시글 삭제 성공")
-    @ApiResponse(responseCode = "400", description = "게시글 삭제 실패")
+    @ApiResponse(responseCode = "400", description = "게시글 삭제 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PutMapping("")
     public BaseResponse<String> deleteBoard(
             @Parameter(required = true, name = "게시글 아이디")
@@ -81,12 +109,19 @@ public class BoardController {
         return new BaseResponse<>(response);
     }
 
+    /**
+     * 본인과 팔로잉한 유저들의 게시글 무한 스크롤 조회 API
+     * [GET] /board/all
+     * @param lastBoardId 마지막으로 조회한 게시글 아이디. 첫 로딩 시 null값.
+     * @return BaseResponse<String>
+     */
     @Operation(summary = "Get 모든 게시글 조회", description = "무한 스크롤 방식이며 마지막으로 조회한 게시글 아이디를 저장하며 조회")
     @ApiResponse(responseCode = "200", description = "모든 게시글 조회 성공")
-    @ApiResponse(responseCode = "400", description = "모든 게시글 조회 실패")
+    @ApiResponse(responseCode = "400", description = "모든 게시글 조회 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @GetMapping("/all")
     public BaseResponse<GetBoardsRes> getBoards(
-            @Parameter(required = false, name = "마지막으로 조회한 게시글 아이디")
+            @Parameter(name = "마지막으로 조회한 게시글 아이디")
             @RequestParam(required = false) Long lastBoardId,
             HttpServletRequest request
 
@@ -102,9 +137,16 @@ public class BoardController {
         return new BaseResponse<>(getBoardsRes);
     }
 
+    /**
+     * 게시글 좋아요 API
+     * [GET] /board/like
+     * @param boardId 좋아요 누를 게시글 아이디
+     * @return BaseResponse<String>
+     */
     @Operation(summary = "Post 게시글 좋아요")
     @ApiResponse(responseCode = "200", description = "게시글 좋아요 성공")
-    @ApiResponse(responseCode = "400", description = "게시글 좋아요 실패")
+    @ApiResponse(responseCode = "400", description = "게시글 좋아요 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PostMapping("/like")
     public BaseResponse<String> likeBoard(
             @Parameter(required = true, name = "게시글 아이디")
@@ -117,9 +159,16 @@ public class BoardController {
         return new BaseResponse<>(response);
     }
 
+    /**
+     * 게시글 좋아요 취소 API
+     * [DELETE] /board/like
+     * @param boardId 좋아요 누를 게시글 아이디
+     * @return BaseResponse<String>
+     */
     @Operation(summary = "Delete 게시글 좋아요 삭제")
     @ApiResponse(responseCode = "200", description = "게시글 좋아요 삭제 성공")
-    @ApiResponse(responseCode = "400", description = "게시글 좋아요 삭제 실패")
+    @ApiResponse(responseCode = "400", description = "게시글 좋아요 삭제 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @DeleteMapping("/like")
     public BaseResponse<String> unlikeBoard(
             @Parameter(required = true, name = "게시글 아이디")
@@ -132,9 +181,16 @@ public class BoardController {
         return new BaseResponse<>(response);
     }
 
+    /**
+     * 게시글 신고 API
+     * [POST] /board/report
+     * @param boardId 신고할 게시글 아이디
+     * @return BaseResponse<String>
+     */
     @Operation(summary = "Post 게시글 신고")
-    @ApiResponse(responseCode = "200", description = "게시글 신고")
-    @ApiResponse(responseCode = "400", description = "게시글 신고")
+    @ApiResponse(responseCode = "200", description = "게시글 신고 성공")
+    @ApiResponse(responseCode = "400", description = "게시글 신고 실패" , content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
+    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @PostMapping("/report")
     public BaseResponse<String> reportBoard(
             @Parameter(required = true, name = "게시글 아이디")
