@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/purchases")
@@ -21,6 +23,7 @@ public class PurchaseController {
 
     /**
      * 결제 후 주문 정보 기록 API
+     * 결제 실패도 기록
      * /resources/template/payment.html 참고!
      * [POST] /purchases/success
      * @return BaseResponse<String>
@@ -29,29 +32,10 @@ public class PurchaseController {
     @ApiResponse(responseCode = "200", description = "주문 정보 기록 성공")
     @ApiResponse(responseCode = "400", description = "주문 정보 기록 실패", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
     @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
-    @PostMapping("/success")
-    public BaseResponse<String> saveOrder(@RequestBody PurchaseReq request) {
+    @PostMapping("")
+    public BaseResponse<String> saveOrder(@RequestBody @Valid PurchaseReq request) {
         purchaserService.saveOrder(request);
-        String response = "주문 성공 기록  성공";
-        return new BaseResponse<>(response);
-    }
-
-
-    /**
-     * 결제 중 실패한 주문 정보 기록 API
-     * /resources/template/payment.html 참고!
-     * [POST] /purchases/fail
-     * @return BaseResponse<String>
-     */
-    @Operation(summary = "Post 주문 실패 정보 기록")
-    @ApiResponse(responseCode = "200", description = "주문 실패 정보 기록 성공")
-    @ApiResponse(responseCode = "400", description = "주문 실패 정보 기록 실패")
-    @ApiResponse(responseCode = "500", description = "서버 에러", content = {@Content(schema = @Schema(implementation = BaseErrorResponse.class))} )
-    @PostMapping("/fail")
-    @ResponseBody
-    public BaseResponse<String> saveFailOrder(@RequestBody PurchaseReq request) {
-        purchaserService.saveFailOrder(request);
-        String response = "주문 실패 기록 성공";
+        String response = "주문 성공 기록 성공";
         return new BaseResponse<>(response);
     }
 
