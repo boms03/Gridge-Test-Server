@@ -1,11 +1,13 @@
 package com.example.demo.src.admin.model;
 
 import com.example.demo.common.Constant;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Builder
 public class UserInfoRes {
     private Long id;
