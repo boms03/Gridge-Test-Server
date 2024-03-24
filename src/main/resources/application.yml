@@ -14,22 +14,18 @@ spring:
     init:
       platform: mysql
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${db_url}
+    username: ${db_username}
+    password: ${db_password}
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
     # driver-class-name: com.mysql.jdbc.Driver # mysql 5버전
-
-  jpa:
-    defer-datasource-initialization: true
-
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: ${CLIENT_ID}
-            redirect-uri: ${REDIRECT_URI}
+            client-id: ${client_id}
+            redirect-uri: ${redirect_uri}
             authorization-grant-type: authorization_code
 
 
@@ -67,11 +63,11 @@ springdoc:
     - /**
 
 jwt:
-  secret-key: ${JWT_KEY}
+  secret-key: ${jwt_key}
 
-imp-code: ${IMP_CODE}
-imp-api-key: ${IMP_API_KEY}
-imp-secret-key: ${IMP_SECRET_KEY}
+imp-code: ${imp_code}
+imp-api-key: ${imp_api_key}
+imp-secret-key: ${imp_secret_key}
 
 ---
 spring:
